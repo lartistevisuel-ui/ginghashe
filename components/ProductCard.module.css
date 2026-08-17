@@ -21,6 +21,11 @@
   max-width: none;
 }
 
+/* Sur les cartes pleine largeur (listes), image plus basse pour compacter */
+.fluid .image {
+  aspect-ratio: 16 / 10;
+}
+
 /* --- Image + overlays --- */
 .media {
   position: relative;
