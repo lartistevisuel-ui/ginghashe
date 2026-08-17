@@ -34,6 +34,7 @@
 }
 
 .iconWrap {
+  position: relative;
   width: 42px;
   height: 42px;
   border-radius: 999px;
@@ -41,6 +42,23 @@
   align-items: center;
   justify-content: center;
   transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 17px;
+  text-align: center;
+  box-shadow: 0 0 0 2px rgba(19, 24, 41, 0.9);
 }
 
 .iconWrap svg {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "./ProductDetail.module.css";
 import { TruckIcon, PinIcon, EyeIcon } from "./Icons";
+import { addToCart } from "../lib/cart";
 
 export default function ProductDetail({ product }) {
   const tiers =
@@ -15,15 +16,20 @@ export default function ProductDetail({ product }) {
   const current = tiers[idx] || tiers[0];
   const multi = tiers.length > 1;
 
-  function commander() {
+  const [added, setAdded] = useState(false);
+
+  function ajouterAuPanier() {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      image: product.image,
+      weight: current.weight,
+      price: current.price,
+    });
     const tg = typeof window !== "undefined" && window.Telegram?.WebApp;
-    const line = `${product.name}${current.weight ? " — " + current.weight : ""} : ${current.price}`;
-    if (tg && tg.showAlert) {
-      tg.HapticFeedback?.impactOccurred?.("medium");
-      tg.showAlert(`Commande :\n${line}\n\nContacte-nous pour finaliser 👑`);
-    } else {
-      alert(`Commande :\n${line}`);
-    }
+    tg?.HapticFeedback?.impactOccurred?.("light");
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1600);
   }
 
   return (
@@ -108,11 +114,19 @@ export default function ProductDetail({ product }) {
         <button
           className={styles.cta}
           type="button"
-          onClick={commander}
+          onClick={ajouterAuPanier}
           disabled={product.soldout}
         >
-          {product.soldout ? "Produit en rupture" : "Commander"}
+          {product.soldout
+            ? "Produit en rupture"
+            : added
+            ? "Ajouté au panier ✓"
+            : "🛒 Ajouter au panier"}
         </button>
+
+        <Link href="/panier" className={styles.viewCart}>
+          Voir mon panier →
+        </Link>
       </div>
     </main>
   );

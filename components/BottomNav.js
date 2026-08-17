@@ -1,12 +1,15 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./BottomNav.module.css";
+import { cartCount } from "../lib/cart";
 
 const TABS = [
   { id: "home", label: "Accueil", href: "/" },
   { id: "favorites", label: "Favoris", href: "/favoris" },
+  { id: "cart", label: "Panier", href: "/panier" },
   { id: "reviews", label: "Avis", href: "/avis" },
   { id: "help", label: "Aide", href: "/aide" },
   { id: "account", label: "Compte", href: "/compte" },
@@ -48,6 +51,13 @@ function Icon({ id }) {
           <path d="M4.5 20a7.5 7.5 0 0 1 15 0" strokeLinecap="round" />
         </svg>
       );
+    case "cart":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M6 8h12l-1 11a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1L6 8Z" strokeLinejoin="round" />
+          <path d="M9 8a3 3 0 0 1 6 0" strokeLinecap="round" />
+        </svg>
+      );
     default:
       return null;
   }
@@ -55,6 +65,14 @@ function Icon({ id }) {
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const sync = () => setCount(cartCount());
+    sync();
+    window.addEventListener("cart-changed", sync);
+    return () => window.removeEventListener("cart-changed", sync);
+  }, []);
 
   // Pas de barre de navigation sur les pages admin
   if (pathname && pathname.startsWith("/admin")) return null;
@@ -78,6 +96,9 @@ export default function BottomNav() {
               }`}
             >
               <Icon id={tab.id} />
+              {tab.id === "cart" && count > 0 && (
+                <span className={styles.badge}>{count}</span>
+              )}
             </span>
           </Link>
         );

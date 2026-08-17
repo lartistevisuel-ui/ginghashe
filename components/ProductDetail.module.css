@@ -218,6 +218,15 @@
   cursor: default;
 }
 
+.viewCart {
+  align-self: center;
+  margin-top: 4px;
+  color: var(--accent-soft);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
