@@ -46,6 +46,7 @@
   border: 1px solid var(--divider);
   border-radius: 13px;
   color: var(--ivory);
+  text-decoration: none;
   font-family: var(--font-body), sans-serif;
   padding: 11px 8px;
   text-align: center;

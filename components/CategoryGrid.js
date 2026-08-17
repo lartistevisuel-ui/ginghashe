@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./CategoryGrid.module.css";
 import { categories } from "../data/categories";
 import CategoryIcon from "./CategoryIcon";
@@ -27,17 +28,17 @@ export default function CategoryGrid() {
       </div>
       <div className={styles.grid}>
         {categories.map((cat) => (
-          <button
+          <Link
             key={cat.id}
+            href={`/categorie/${cat.id}`}
             className={styles.card}
-            type="button"
             style={{ "--cat-color": cat.color }}
           >
             <span className={styles.iconChip}>
               <CategoryIcon id={cat.id} className={styles.catIcon} />
             </span>
             <span className={styles.label}>{cat.label}</span>
-          </button>
+          </Link>
         ))}
       </div>
     </section>

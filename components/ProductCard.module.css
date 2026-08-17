@@ -9,6 +9,11 @@
   scroll-snap-align: start;
 }
 
+.fluid {
+  width: 100%;
+  max-width: none;
+}
+
 /* --- Image + overlays --- */
 .media {
   position: relative;

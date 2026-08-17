@@ -4,7 +4,7 @@ import { useState } from "react";
 import styles from "./ProductCard.module.css";
 import { TruckIcon, PinIcon, EyeIcon, StarIcon, ChevronDownIcon } from "./Icons";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, fluid }) {
   const tiers =
     Array.isArray(product.prices) && product.prices.length
       ? product.prices
@@ -15,7 +15,7 @@ export default function ProductCard({ product }) {
   const multi = tiers.length > 1;
 
   return (
-    <article className={styles.card}>
+    <article className={`${styles.card} ${fluid ? styles.fluid : ""}`}>
       <div className={styles.media}>
         <img
           src={product.image || "/product-placeholder.svg"}

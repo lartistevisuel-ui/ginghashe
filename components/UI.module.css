@@ -40,6 +40,14 @@
   line-height: 1.5;
 }
 
+.backLink {
+  align-self: flex-start;
+  color: var(--accent-soft);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 /* FAQ */
 .faqQ {
   font-size: 14px;
