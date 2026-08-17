@@ -2,6 +2,8 @@ import { Space_Grotesk, Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import TelegramInit from "../components/TelegramInit";
+import BottomNav from "../components/BottomNav";
+import ScrollTopButton from "../components/ScrollTopButton";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -40,7 +42,11 @@ export default function RootLayout({ children }) {
           strategy="beforeInteractive"
         />
         <TelegramInit />
-        <div className="app-shell">{children}</div>
+        <div className="app-shell">
+          {children}
+          <BottomNav />
+          <ScrollTopButton />
+        </div>
       </body>
     </html>
   );

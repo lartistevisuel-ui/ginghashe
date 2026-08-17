@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import styles from "./BottomNav.module.css";
 
 const TABS = [
-  { id: "home", label: "Accueil" },
-  { id: "favorites", label: "Favoris" },
-  { id: "reviews", label: "Avis" },
-  { id: "help", label: "Aide" },
-  { id: "account", label: "Compte" },
+  { id: "home", label: "Accueil", href: "/" },
+  { id: "favorites", label: "Favoris", href: "/favoris" },
+  { id: "reviews", label: "Avis", href: "/avis" },
+  { id: "help", label: "Aide", href: "/aide" },
+  { id: "account", label: "Compte", href: "/compte" },
 ];
 
 function Icon({ id }) {
@@ -53,28 +54,31 @@ function Icon({ id }) {
 }
 
 export default function BottomNav() {
-  const [active, setActive] = useState("home");
+  const pathname = usePathname();
 
   return (
     <nav className={styles.nav} aria-label="Navigation principale">
-      {TABS.map((tab) => (
-        <button
-          key={tab.id}
-          type="button"
-          className={styles.item}
-          aria-current={active === tab.id ? "page" : undefined}
-          aria-label={tab.label}
-          onClick={() => setActive(tab.id)}
-        >
-          <span
-            className={`${styles.iconWrap} ${
-              active === tab.id ? styles.iconWrapActive : ""
-            }`}
+      {TABS.map((tab) => {
+        const active =
+          tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
+        return (
+          <Link
+            key={tab.id}
+            href={tab.href}
+            className={styles.item}
+            aria-current={active ? "page" : undefined}
+            aria-label={tab.label}
           >
-            <Icon id={tab.id} />
-          </span>
-        </button>
-      ))}
+            <span
+              className={`${styles.iconWrap} ${
+                active ? styles.iconWrapActive : ""
+              }`}
+            >
+              <Icon id={tab.id} />
+            </span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }

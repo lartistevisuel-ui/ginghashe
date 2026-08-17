@@ -2,8 +2,6 @@ import styles from "./Home.module.css";
 import Marquee from "./Marquee";
 import CategoryGrid from "./CategoryGrid";
 import ProductCarousel from "./ProductCarousel";
-import BottomNav from "./BottomNav";
-import ScrollTopButton from "./ScrollTopButton";
 import { StarIcon, SparkleIcon } from "./Icons";
 import { products } from "../data/products";
 import { newArrivals } from "../data/newArrivals";
@@ -28,8 +26,6 @@ export default function Home() {
         seeAllLabel="Tous les produits →"
         products={newArrivals}
       />
-      <BottomNav />
-      <ScrollTopButton />
     </main>
   );
 }
