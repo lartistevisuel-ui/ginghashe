@@ -25,7 +25,11 @@ export default async function ProduitsPage() {
         {list.length === 0 ? (
           <p className={ui.muted}>Aucun produit pour l'instant.</p>
         ) : (
-          list.map((p) => <ProductCard key={p.id} product={p} fluid />)
+          <div className={ui.productGrid}>
+            {list.map((p) => (
+              <ProductCard key={p.id} product={p} fluid />
+            ))}
+          </div>
         )}
       </div>
     </Page>

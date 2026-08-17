@@ -32,7 +32,11 @@ export default async function CategoryPage({ params }) {
         {list.length === 0 ? (
           <p className={ui.muted}>Aucun produit dans cette catégorie pour l'instant.</p>
         ) : (
-          list.map((p) => <ProductCard key={p.id} product={p} fluid />)
+          <div className={ui.productGrid}>
+            {list.map((p) => (
+              <ProductCard key={p.id} product={p} fluid />
+            ))}
+          </div>
         )}
       </div>
     </Page>

@@ -57,7 +57,7 @@ export default function FavoritesSection() {
   }
 
   return (
-    <div className={ui.stack}>
+    <div className={ui.productGrid}>
       {favProducts.map((p) => (
         <ProductCard key={p.id} product={p} fluid />
       ))}

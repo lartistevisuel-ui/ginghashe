@@ -5,6 +5,13 @@
   gap: 12px;
 }
 
+/* Grille 2 colonnes pour les listes de produits */
+.productGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
 .panel {
   background: linear-gradient(160deg, var(--bg-elevated) 0%, var(--bg-elevated-2) 100%);
   border: 1px solid var(--divider);
