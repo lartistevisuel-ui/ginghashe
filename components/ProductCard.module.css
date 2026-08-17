@@ -7,6 +7,13 @@
   border-radius: 16px;
   overflow: hidden;
   scroll-snap-align: start;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:active {
+  transform: scale(0.99);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--divider));
 }
 
 .fluid {
