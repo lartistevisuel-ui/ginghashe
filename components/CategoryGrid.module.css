@@ -81,8 +81,15 @@
   width: 40px;
   height: 40px;
   border-radius: 11px;
+  color: var(--cat-color);
   background: color-mix(in srgb, var(--cat-color) 16%, transparent);
   border: 1px solid color-mix(in srgb, var(--cat-color) 35%, transparent);
+}
+
+.catIcon {
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--cat-color) 45%, transparent));
 }
 
 .label {

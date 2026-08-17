@@ -1,18 +1,20 @@
-import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { Space_Grotesk, Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import TelegramInit from "../components/TelegramInit";
 
-const display = Cormorant_Garamond({
+const display = Space_Grotesk({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
   variable: "--font-display",
+  display: "swap",
 });
 
-const body = Manrope({
+const body = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-body",
+  display: "swap",
 });
 
 export const metadata = {

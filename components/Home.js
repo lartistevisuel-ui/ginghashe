@@ -1,8 +1,12 @@
 import styles from "./Home.module.css";
 import Marquee from "./Marquee";
 import CategoryGrid from "./CategoryGrid";
-import ProductList from "./ProductList";
+import ProductCarousel from "./ProductCarousel";
 import BottomNav from "./BottomNav";
+import ScrollTopButton from "./ScrollTopButton";
+import { StarIcon, SparkleIcon } from "./Icons";
+import { products } from "../data/products";
+import { newArrivals } from "../data/newArrivals";
 
 export default function Home() {
   return (
@@ -12,8 +16,20 @@ export default function Home() {
       </header>
       <Marquee />
       <CategoryGrid />
-      <ProductList />
+      <ProductCarousel
+        title="Best-sellers"
+        icon={<StarIcon size={18} />}
+        seeAllLabel="Tout voir →"
+        products={products}
+      />
+      <ProductCarousel
+        title="Nouveautés"
+        icon={<SparkleIcon size={18} />}
+        seeAllLabel="Tous les produits →"
+        products={newArrivals}
+      />
       <BottomNav />
+      <ScrollTopButton />
     </main>
   );
 }

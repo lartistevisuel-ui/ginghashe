@@ -1,4 +1,5 @@
 import styles from "./ProductCard.module.css";
+import { TruckIcon, PinIcon, EyeIcon, StarIcon, ChevronDownIcon } from "./Icons";
 
 export default function ProductCard({ product }) {
   return (
@@ -8,15 +9,24 @@ export default function ProductCard({ product }) {
 
         <div className={styles.badges}>
           {product.postal && (
-            <span className={`${styles.badge} ${styles.postal}`}>📮 POSTAL</span>
+            <span className={`${styles.badge} ${styles.postal}`}>
+              <TruckIcon className={styles.badgeIcon} size={13} /> POSTAL
+            </span>
           )}
           {product.meetup && (
-            <span className={`${styles.badge} ${styles.meetup}`}>📍 MEET-UP</span>
+            <span className={`${styles.badge} ${styles.meetup}`}>
+              <PinIcon className={styles.badgeIcon} size={13} /> MEET-UP
+            </span>
+          )}
+          {product.vitrine && (
+            <span className={`${styles.badge} ${styles.vitrine}`}>
+              <EyeIcon className={styles.badgeIcon} size={13} /> VITRINE
+            </span>
           )}
         </div>
 
         <button className={styles.fav} type="button" aria-label="Favori">
-          ★
+          <StarIcon size={15} />
         </button>
       </div>
 
@@ -29,7 +39,7 @@ export default function ProductCard({ product }) {
 
         <button className={styles.variant} type="button">
           <span>{product.variant}</span>
-          <span className={styles.chevron}>▾</span>
+          <ChevronDownIcon className={styles.chevron} size={15} />
         </button>
 
         <div className={styles.priceRow}>

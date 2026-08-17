@@ -1,4 +1,5 @@
 import styles from "./Marquee.module.css";
+import { MegaphoneIcon } from "./Icons";
 
 const MESSAGE = "KINGHASH 94 👑 Livraison rapide 🚀 Nouveautés chaque semaine 🔥";
 
@@ -6,7 +7,7 @@ export default function Marquee() {
   return (
     <div className={styles.bar}>
       <div className={styles.label}>
-        <span className={styles.labelIcon}>📢</span> INFOS
+        <MegaphoneIcon className={styles.labelIcon} size={15} /> INFOS
       </div>
       <div className={styles.marquee}>
         <div className={styles.track}>

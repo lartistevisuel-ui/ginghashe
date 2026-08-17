@@ -1,5 +1,5 @@
 .section {
-  padding: 22px 0 calc(110px + env(safe-area-inset-bottom, 0px));
+  padding: 20px 0 6px;
 }
 
 .header {
@@ -20,6 +20,8 @@
 }
 
 .star {
+  display: inline-flex;
+  align-items: center;
   color: var(--accent);
 }
 

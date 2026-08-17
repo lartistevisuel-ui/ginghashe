@@ -1,5 +1,6 @@
 import styles from "./CategoryGrid.module.css";
 import { categories } from "../data/categories";
+import CategoryIcon from "./CategoryIcon";
 
 function GridIcon({ color }) {
   return (
@@ -33,11 +34,9 @@ export default function CategoryGrid() {
             style={{ "--cat-color": cat.color }}
           >
             <span className={styles.iconChip}>
-              <GridIcon color={cat.color} />
+              <CategoryIcon id={cat.id} className={styles.catIcon} />
             </span>
-            <span className={styles.label}>
-              {cat.label} <span className={styles.emoji}>{cat.emoji}</span>
-            </span>
+            <span className={styles.label}>{cat.label}</span>
           </button>
         ))}
       </div>
