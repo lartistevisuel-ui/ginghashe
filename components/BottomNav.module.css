@@ -7,9 +7,9 @@
 
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 14px;
 
-  padding: 8px;
+  padding: 8px 18px;
   border-radius: 999px;
   background: rgba(19, 24, 41, 0.9);
   backdrop-filter: blur(14px);
