@@ -118,6 +118,76 @@
   color: var(--accent);
 }
 
+/* Formulaire de commande */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-top: 6px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--divider);
+  background: var(--bg-elevated);
+}
+
+.formTitle {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ivory);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.lbl {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.input {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--divider);
+  background: var(--bg-elevated-2);
+  color: var(--ivory);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  resize: vertical;
+}
+
+.input:focus {
+  border-color: var(--accent-soft);
+}
+
+.modeRow {
+  display: flex;
+  gap: 8px;
+}
+
+.modeBtn {
+  flex: 1;
+  padding: 11px;
+  border-radius: 10px;
+  border: 1px solid var(--divider);
+  background: var(--bg-elevated-2);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modeActive {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(180deg, #ef2b3d 0%, var(--accent) 100%);
+}
+
 .checkout {
   margin-top: 4px;
   width: 100%;
