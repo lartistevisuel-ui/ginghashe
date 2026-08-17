@@ -31,9 +31,7 @@ export default function ProductCard({ product }) {
       </div>
 
       <div className={styles.body}>
-        <h3 className={styles.name}>
-          {product.prefix} {product.name} {product.suffix}
-        </h3>
+        <h3 className={styles.name}>{product.name}</h3>
         <span className={styles.grade}>{product.grade}</span>
         <p className={styles.description}>{product.description}</p>
 

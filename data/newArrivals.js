@@ -2,9 +2,7 @@
 export const newArrivals = [
   {
     id: "new-1",
-    prefix: "🌿",
     name: "BAGUETTES DE L'ENSORCELEUR",
-    suffix: "✨",
     grade: "GOLD 24K PAPER SPECIAL LIMITED EDITION",
     description: "1.9G EXOT*IC + 0.3 DIAMONDS + 0.2…",
     variant: "GOLD 24K SPECIAL EDITION",
@@ -17,9 +15,7 @@ export const newArrivals = [
   },
   {
     id: "new-2",
-    prefix: "🪄",
     name: "MAGIC PLATEAU",
-    suffix: "🔮",
     grade: "ACCESSOIRE",
     description: "Plateau pour rouler — édition collector…",
     variant: "MAGIC EDITION",
@@ -32,9 +28,7 @@ export const newArrivals = [
   },
   {
     id: "new-3",
-    prefix: "❄️",
     name: "FROZEN DIAMONDS",
-    suffix: "💎",
     grade: "GRADE A+",
     description: "Cristaux premium, pureté maximale…",
     variant: "ICE DIAMONDS",

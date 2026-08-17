@@ -2,9 +2,7 @@
 export const products = [
   {
     id: "prod-1",
-    prefix: "🧊",
     name: "ICE HASH ENVOÛTER",
-    suffix: "💎",
     grade: "GRADE B",
     description: 'TEMPLE BALL ICE "FRENCHY CANNOLI"…',
     variant: "WHITE MAGIC ZKITTLEZ",
@@ -16,9 +14,7 @@ export const products = [
   },
   {
     id: "prod-2",
-    prefix: "🧊",
     name: "ICE HASH ROYAL",
-    suffix: "👑",
     grade: "GRADE A",
     description: "TEMPLE BALL ICE — première qualité…",
     variant: "FORBIDDEN FRUIT",
@@ -30,9 +26,7 @@ export const products = [
   },
   {
     id: "prod-3",
-    prefix: "🌿",
     name: "FLOWER PREMIUM",
-    suffix: "🔥",
     grade: "GRADE A+",
     description: "Fleur indoor cultivée avec soin…",
     variant: "GELATO 41",
@@ -44,9 +38,7 @@ export const products = [
   },
   {
     id: "prod-4",
-    prefix: "🍫",
     name: "EDIBLE DELUXE",
-    suffix: "✨",
     grade: "GRADE B",
     description: "Space cake maison, dosage maîtrisé…",
     variant: "CHOCO BROWNIE",

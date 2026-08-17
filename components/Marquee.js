@@ -1,7 +1,7 @@
 import styles from "./Marquee.module.css";
 import { MegaphoneIcon } from "./Icons";
 
-const MESSAGE = "KINGHASH 94 👑 Livraison rapide 🚀 Nouveautés chaque semaine 🔥";
+const MESSAGE = "KINGHASH 94 — Livraison rapide — Nouveautés chaque semaine";
 
 export default function Marquee() {
   return (
