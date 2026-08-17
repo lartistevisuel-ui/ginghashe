@@ -9,11 +9,25 @@ export default function ReviewsSection() {
   const [loading, setLoading] = useState(true);
 
   const [author, setAuthor] = useState("");
+  const [tgName, setTgName] = useState("");
   const [message, setMessage] = useState("");
   const [stars, setStars] = useState(5);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState(null);
   const [open, setOpen] = useState(false);
+
+  // Nom auto depuis le compte Telegram (mini-app)
+  useEffect(() => {
+    const u =
+      typeof window !== "undefined" &&
+      window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (u) {
+      const name = u.first_name
+        ? `${u.first_name}${u.last_name ? " " + u.last_name : ""}`
+        : u.username || "";
+      if (name) setTgName(name);
+    }
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -40,7 +54,7 @@ export default function ReviewsSection() {
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ author, message, stars }),
+        body: JSON.stringify({ author: tgName || author, message, stars }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur");
@@ -67,13 +81,19 @@ export default function ReviewsSection() {
 
       {open && (
         <form className={styles.form} onSubmit={submit}>
-          <input
-            className={styles.input}
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            placeholder="Ton nom"
-            required
-          />
+          {tgName ? (
+            <div className={styles.asUser}>
+              Tu publies en tant que <b>{tgName}</b>
+            </div>
+          ) : (
+            <input
+              className={styles.input}
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              placeholder="Ton nom"
+              required
+            />
+          )}
 
           <div className={styles.starsPick}>
             {[1, 2, 3, 4, 5].map((n) => (
