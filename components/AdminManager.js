@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import styles from "./AdminManager.module.css";
+import { categories } from "../data/categories";
 
 const TABS = [
   { section: "best", label: "Best-sellers" },
@@ -13,6 +14,7 @@ const emptyForm = () => ({
   grade: "",
   description: "",
   variant: "",
+  category: "",
   postal: true,
   meetup: true,
   vitrine: false,
@@ -220,6 +222,18 @@ export default function AdminManager() {
               <input className={styles.input} value={form.variant} onChange={set("variant")} placeholder="WHITE MAGIC ZKITTLEZ" />
             </label>
 
+            <label className={styles.field}>
+              <span className={styles.lbl}>Catégorie</span>
+              <select className={styles.input} value={form.category} onChange={set("category")}>
+                <option value="">— Aucune —</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
             {/* Tarifs multiples */}
             <div className={styles.field}>
               <span className={styles.lbl}>Tarifs (poids + prix)</span>
@@ -287,6 +301,11 @@ export default function AdminManager() {
                       {Array.isArray(item.prices) && item.prices.length
                         ? item.prices.map((p) => `${p.weight} ${p.price}`).join(" · ")
                         : item.price}
+                      {item.category &&
+                        ` — ${
+                          categories.find((c) => c.id === item.category)?.label ||
+                          item.category
+                        }`}
                     </span>
                   </div>
                   <div className={styles.itemActions}>

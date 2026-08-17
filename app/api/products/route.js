@@ -42,6 +42,7 @@ export async function POST(req) {
     grade: body.grade ? String(body.grade).trim() : "",
     description: body.description ? String(body.description).trim() : "",
     variant: body.variant ? String(body.variant).trim() : "",
+    category: body.category ? String(body.category).trim() : "",
     weight: body.weight ? String(body.weight).trim() : "",
     price: String(body.price).trim(),
     prices,
