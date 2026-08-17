@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./ProductList.module.css";
 import ProductCard from "./ProductCard";
 
@@ -5,6 +6,7 @@ export default function ProductCarousel({
   title,
   icon = "★",
   seeAllLabel = "Tout voir →",
+  seeAllHref = "/produits",
   products,
 }) {
   return (
@@ -13,9 +15,9 @@ export default function ProductCarousel({
         <h2 className={styles.title}>
           <span className={styles.star}>{icon}</span> {title}
         </h2>
-        <button className={styles.seeAll} type="button">
+        <Link href={seeAllHref} className={styles.seeAll}>
           {seeAllLabel}
-        </button>
+        </Link>
       </div>
       <div className={styles.carousel}>
         {products.map((product) => (

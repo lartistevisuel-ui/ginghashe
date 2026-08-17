@@ -22,9 +22,9 @@ export default function CategoryGrid() {
           <GridIcon color="var(--accent)" />
           Catégories
         </h2>
-        <button className={styles.seeAll} type="button">
+        <Link href="/produits" className={styles.seeAll}>
           Tout voir →
-        </button>
+        </Link>
       </div>
       <div className={styles.grid}>
         {categories.map((cat) => (
