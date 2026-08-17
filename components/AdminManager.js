@@ -16,6 +16,7 @@ const emptyForm = () => ({
   postal: true,
   meetup: true,
   vitrine: false,
+  soldout: false,
 });
 
 export default function AdminManager() {
@@ -118,6 +119,22 @@ export default function AdminManager() {
       setStatus({ type: "err", msg: err.message });
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function toggleStock(item) {
+    const next = !item.soldout;
+    setItems((list) => list.map((p) => (p.id === item.id ? { ...p, soldout: next } : p)));
+    try {
+      const res = await fetch(`/api/products?id=${encodeURIComponent(item.id)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ soldout: next }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setItems((list) => list.map((p) => (p.id === item.id ? { ...p, soldout: !next } : p)));
+      setStatus({ type: "err", msg: "Mise à jour du stock échouée." });
     }
   }
 
@@ -230,6 +247,9 @@ export default function AdminManager() {
               <label className={styles.check}>
                 <input type="checkbox" checked={form.vitrine} onChange={set("vitrine")} /> Vitrine
               </label>
+              <label className={styles.check}>
+                <input type="checkbox" checked={form.soldout} onChange={set("soldout")} /> En rupture
+              </label>
             </div>
 
             {status && (
@@ -254,21 +274,33 @@ export default function AdminManager() {
               list.map((item) => (
                 <div key={item.id} className={styles.itemRow}>
                   <div className={styles.itemInfo}>
-                    <span className={styles.itemName}>{item.name}</span>
+                    <span className={styles.itemName}>
+                      {item.name}
+                      {item.soldout && <span className={styles.ruptureTag}>RUPTURE</span>}
+                    </span>
                     <span className={styles.itemMeta}>
                       {Array.isArray(item.prices) && item.prices.length
                         ? item.prices.map((p) => `${p.weight} ${p.price}`).join(" · ")
                         : item.price}
                     </span>
                   </div>
-                  <button
-                    className={styles.delBtn}
-                    type="button"
-                    onClick={() => remove(item)}
-                    disabled={deletingId === item.id}
-                  >
-                    {deletingId === item.id ? "…" : "Supprimer"}
-                  </button>
+                  <div className={styles.itemActions}>
+                    <button
+                      className={styles.stockBtn}
+                      type="button"
+                      onClick={() => toggleStock(item)}
+                    >
+                      {item.soldout ? "Remettre en stock" : "Mettre en rupture"}
+                    </button>
+                    <button
+                      className={styles.delBtn}
+                      type="button"
+                      onClick={() => remove(item)}
+                      disabled={deletingId === item.id}
+                    >
+                      {deletingId === item.id ? "…" : "Supprimer"}
+                    </button>
+                  </div>
                 </div>
               ))
             )}

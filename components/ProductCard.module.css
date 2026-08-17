@@ -88,6 +88,38 @@
   box-shadow: 0 0 12px rgba(225, 29, 42, 0.6);
 }
 
+/* Overlay RUPTURE (plus de stock) */
+.soldout {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(11, 9, 18, 0.55);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+
+.soldoutBan {
+  width: 58px;
+  height: 58px;
+  color: #ff3b3b;
+  filter: drop-shadow(0 0 10px rgba(255, 59, 59, 0.6));
+}
+
+.soldoutLabel {
+  padding: 8px 24px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ff3b3b 0%, #c81e2a 100%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  box-shadow: 0 6px 18px rgba(200, 30, 42, 0.5);
+}
+
 /* --- Body --- */
 .body {
   padding: 12px 13px 14px;

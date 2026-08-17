@@ -3,6 +3,7 @@ import {
   getProductsFromDB,
   addProductToDB,
   deleteProductFromDB,
+  updateProductInDB,
 } from "../../../lib/products-db";
 
 export const dynamic = "force-dynamic";
@@ -47,6 +48,7 @@ export async function POST(req) {
     postal: Boolean(body.postal),
     meetup: Boolean(body.meetup),
     vitrine: Boolean(body.vitrine),
+    soldout: Boolean(body.soldout),
     image: body.image ? String(body.image).trim() : "/product-placeholder.svg",
     section: body.section === "new" ? "new" : "best",
   };
@@ -54,6 +56,34 @@ export async function POST(req) {
   try {
     const created = await addProductToDB(product);
     return NextResponse.json(created, { status: 201 });
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
+}
+
+export async function PATCH(req) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+  if (!id) {
+    return NextResponse.json({ error: "id manquant." }, { status: 400 });
+  }
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Corps invalide." }, { status: 400 });
+  }
+
+  const fields = {};
+  if (typeof body.soldout === "boolean") fields.soldout = body.soldout;
+
+  if (Object.keys(fields).length === 0) {
+    return NextResponse.json({ error: "Rien à mettre à jour." }, { status: 400 });
+  }
+
+  try {
+    const updated = await updateProductInDB(id, fields);
+    return NextResponse.json(updated);
   } catch (e) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

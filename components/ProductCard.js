@@ -44,6 +44,22 @@ export default function ProductCard({ product }) {
         <button className={styles.fav} type="button" aria-label="Favori">
           <StarIcon size={15} />
         </button>
+
+        {product.soldout && (
+          <div className={styles.soldout}>
+            <svg
+              className={styles.soldoutBan}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <line x1="5.6" y1="5.6" x2="18.4" y2="18.4" strokeLinecap="round" />
+            </svg>
+            <span className={styles.soldoutLabel}>RUPTURE</span>
+          </div>
+        )}
       </div>
 
       <div className={styles.body}>
