@@ -10,7 +10,7 @@ export default function ProductCard({ product }) {
         <div className={styles.badges}>
           {product.postal && (
             <span className={`${styles.badge} ${styles.postal}`}>
-              <TruckIcon className={styles.badgeIcon} size={13} /> POSTAL
+              <TruckIcon className={styles.badgeIcon} size={13} /> LIVRAISON
             </span>
           )}
           {product.meetup && (
