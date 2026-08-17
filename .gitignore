@@ -1,0 +1,12 @@
+# dépendances
+/node_modules
+
+# build Next.js
+/.next
+/out
+
+# divers
+.DS_Store
+*.log
+.env*.local
+.vercel

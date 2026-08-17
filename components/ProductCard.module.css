@@ -1,0 +1,179 @@
+.card {
+  flex: 0 0 auto;
+  width: 300px;
+  max-width: 82vw;
+  background: linear-gradient(165deg, var(--bg-elevated) 0%, var(--bg-elevated-2) 100%);
+  border: 1px solid var(--divider);
+  border-radius: 18px;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+
+/* --- Image + overlays --- */
+.media {
+  position: relative;
+}
+
+.image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(11, 14, 26, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.postal {
+  color: #7fb0ff;
+  border: 1px solid rgba(79, 139, 255, 0.6);
+}
+
+.meetup {
+  color: #4fe0a0;
+  border: 1px solid rgba(61, 220, 132, 0.55);
+}
+
+.fav {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(11, 14, 26, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--accent);
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.fav:active {
+  transform: scale(0.9);
+  box-shadow: 0 0 12px rgba(225, 29, 42, 0.6);
+}
+
+/* --- Body --- */
+.body {
+  padding: 12px 13px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ivory);
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
+.grade {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.description {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sélecteur de variété */
+.variant {
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(79, 139, 255, 0.4);
+  background: rgba(79, 139, 255, 0.06);
+  color: var(--ivory);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  text-align: left;
+}
+
+.chevron {
+  color: var(--accent-soft);
+  font-size: 11px;
+}
+
+/* Ligne poids + prix */
+.priceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--divider);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.weight {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.price {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+/* Bouton principal */
+.cta {
+  margin-top: 3px;
+  width: 100%;
+  padding: 11px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(180deg, #ef2b3d 0%, var(--accent) 100%);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.cta:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 18px rgba(225, 29, 42, 0.5);
+}

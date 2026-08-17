@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <rect width="800" height="500" fill="#191524"/>
+  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#2A2440" stroke-width="2"/>
+  <text x="400" y="260" font-family="Georgia, serif" font-size="28" fill="#948CA8" text-anchor="middle">Image d'accueil (placeholder)</text>
+</svg>

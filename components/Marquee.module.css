@@ -1,0 +1,57 @@
+.bar {
+  display: flex;
+  align-items: stretch;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--divider);
+  border-bottom: 1px solid var(--divider);
+}
+
+.label {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--ivory);
+  background: var(--bg-elevated-2);
+  border-right: 1px solid var(--divider);
+}
+
+.labelIcon {
+  font-size: 14px;
+}
+
+.marquee {
+  flex: 1 1 auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  animation: scrollLeft 20s linear infinite;
+}
+
+.item {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding-right: 48px;
+  color: var(--accent-soft);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+@keyframes scrollLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
