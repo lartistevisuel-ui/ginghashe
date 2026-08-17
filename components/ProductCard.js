@@ -5,7 +5,11 @@ export default function ProductCard({ product }) {
   return (
     <article className={styles.card}>
       <div className={styles.media}>
-        <img src={product.image} alt={product.name} className={styles.image} />
+        <img
+          src={product.image || "/product-placeholder.svg"}
+          alt={product.name}
+          className={styles.image}
+        />
 
         <div className={styles.badges}>
           {product.postal && (

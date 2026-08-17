@@ -3,10 +3,10 @@ import Marquee from "./Marquee";
 import CategoryGrid from "./CategoryGrid";
 import ProductCarousel from "./ProductCarousel";
 import { StarIcon, SparkleIcon } from "./Icons";
-import { products } from "../data/products";
-import { newArrivals } from "../data/newArrivals";
+import { products as staticBest } from "../data/products";
+import { newArrivals as staticNew } from "../data/newArrivals";
 
-export default function Home() {
+export default function Home({ bestSellers = staticBest, nouveautes = staticNew }) {
   return (
     <main className={styles.home}>
       <header className={styles.hero}>
@@ -18,13 +18,13 @@ export default function Home() {
         title="Best-sellers"
         icon={<StarIcon size={18} />}
         seeAllLabel="Tout voir →"
-        products={products}
+        products={bestSellers}
       />
       <ProductCarousel
         title="Nouveautés"
         icon={<SparkleIcon size={18} />}
         seeAllLabel="Tous les produits →"
-        products={newArrivals}
+        products={nouveautes}
       />
     </main>
   );

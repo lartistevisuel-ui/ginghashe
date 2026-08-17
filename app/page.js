@@ -1,35 +1,27 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Splash from "../components/Splash";
 import Home from "../components/Home";
+import { getProductsFromDB } from "../lib/products-db";
+import { products as staticBest } from "../data/products";
+import { newArrivals as staticNew } from "../data/newArrivals";
 
-const SPLASH_VISIBLE_MS = 1800;
-const SPLASH_FADE_MS = 500;
+export const dynamic = "force-dynamic";
 
-export default function Page() {
-  const [showSplash, setShowSplash] = useState(true);
-  const [splashLeaving, setSplashLeaving] = useState(false);
+export default async function Page() {
+  let bestSellers = staticBest;
+  let nouveautes = staticNew;
 
-  useEffect(() => {
-    const leaveTimer = setTimeout(() => {
-      setSplashLeaving(true);
-    }, SPLASH_VISIBLE_MS);
-
-    const removeTimer = setTimeout(() => {
-      setShowSplash(false);
-    }, SPLASH_VISIBLE_MS + SPLASH_FADE_MS);
-
-    return () => {
-      clearTimeout(leaveTimer);
-      clearTimeout(removeTimer);
-    };
-  }, []);
+  const db = await getProductsFromDB();
+  if (db && db.length) {
+    const dbBest = db.filter((p) => p.section !== "new");
+    const dbNew = db.filter((p) => p.section === "new");
+    if (dbBest.length) bestSellers = dbBest;
+    if (dbNew.length) nouveautes = dbNew;
+  }
 
   return (
     <>
-      {showSplash && <Splash isLeaving={splashLeaving} />}
-      <Home />
+      <Splash />
+      <Home bestSellers={bestSellers} nouveautes={nouveautes} />
     </>
   );
 }
