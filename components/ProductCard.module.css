@@ -79,18 +79,23 @@
   background: rgba(11, 14, 26, 0.72);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  color: var(--accent);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 15px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, color 0.15s ease;
 }
 
 .fav:active {
-  transform: scale(0.9);
-  box-shadow: 0 0 12px rgba(225, 29, 42, 0.6);
+  transform: scale(0.85);
+}
+
+.favActive {
+  color: var(--accent);
+  border-color: rgba(225, 29, 42, 0.7);
+  box-shadow: 0 0 12px rgba(225, 29, 42, 0.55);
 }
 
 /* Overlay RUPTURE (plus de stock) */

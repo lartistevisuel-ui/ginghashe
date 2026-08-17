@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./ProductCard.module.css";
 import { TruckIcon, PinIcon, EyeIcon, StarIcon, ChevronDownIcon } from "./Icons";
+import { isFav, toggleFav } from "../lib/favorites";
 
 export default function ProductCard({ product, fluid }) {
   const tiers =
@@ -14,6 +15,14 @@ export default function ProductCard({ product, fluid }) {
   const [idx, setIdx] = useState(0);
   const current = tiers[idx] || tiers[0];
   const multi = tiers.length > 1;
+
+  const [fav, setFav] = useState(false);
+  useEffect(() => {
+    setFav(isFav(product.id));
+    const sync = () => setFav(isFav(product.id));
+    window.addEventListener("favs-changed", sync);
+    return () => window.removeEventListener("favs-changed", sync);
+  }, [product.id]);
 
   return (
     <article className={`${styles.card} ${fluid ? styles.fluid : ""}`}>
@@ -42,7 +51,13 @@ export default function ProductCard({ product, fluid }) {
           )}
         </div>
 
-        <button className={styles.fav} type="button" aria-label="Favori">
+        <button
+          className={`${styles.fav} ${fav ? styles.favActive : ""}`}
+          type="button"
+          aria-label="Favori"
+          aria-pressed={fav}
+          onClick={() => setFav(toggleFav(product.id).includes(product.id))}
+        >
           <StarIcon size={15} />
         </button>
 
