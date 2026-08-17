@@ -33,6 +33,14 @@ export async function POST(req) {
   const msg = update.message;
   const text = msg && typeof msg.text === "string" ? msg.text : "";
 
+  if (text.startsWith("/id")) {
+    await tg("sendMessage", {
+      chat_id: msg.chat.id,
+      text: `Ton identifiant de chat : ${msg.chat.id}\n\nAjoute-le sur Vercel comme TELEGRAM_ADMIN_CHAT_ID pour recevoir les commandes.`,
+    });
+    return NextResponse.json({ ok: true });
+  }
+
   if (text.startsWith("/start")) {
     const name = msg.from?.first_name ? ` ${msg.from.first_name}` : "";
     await tg("sendMessage", {

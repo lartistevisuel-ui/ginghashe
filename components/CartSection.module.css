@@ -214,6 +214,21 @@
   cursor: pointer;
 }
 
+.err {
+  padding: 11px 13px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(225, 29, 42, 0.12);
+  border: 1px solid rgba(225, 29, 42, 0.5);
+  color: #ff8088;
+}
+
+.checkout:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .bigCart {
   font-size: 44px;
   margin-bottom: 4px;

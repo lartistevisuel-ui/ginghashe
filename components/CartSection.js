@@ -43,43 +43,72 @@ export default function CartSection() {
 
   const setF = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
+  const [sending, setSending] = useState(false);
+  const [orderStatus, setOrderStatus] = useState(null);
+
   const total = cart.reduce((t, c) => t + parsePrice(c.price) * c.qty, 0);
 
-  function commander() {
+  async function commander() {
     if (!form.name.trim()) {
-      alert("Indique ton nom.");
+      setOrderStatus({ type: "err", msg: "Indique ton nom." });
       return;
     }
     if (form.mode === "livraison" && !form.address.trim()) {
-      alert("Indique ton adresse de livraison.");
+      setOrderStatus({ type: "err", msg: "Indique ton adresse de livraison." });
       return;
     }
 
     const tg = typeof window !== "undefined" && window.Telegram?.WebApp;
-    const lines = cart
-      .map(
-        (c) =>
-          `• ${c.name}${c.weight ? " (" + c.weight + ")" : ""} x${c.qty} — ${c.price}`
-      )
-      .join("\n");
-    const info =
-      `\n\n— Infos client —\n` +
-      `Nom : ${form.name}\n` +
-      `Mode : ${form.mode === "livraison" ? "Livraison" : "Meet-up"}\n` +
-      `${form.mode === "livraison" ? "Adresse" : "Lieu / précisions"} : ${form.address || "-"}` +
-      (form.phone ? `\nContact : ${form.phone}` : "") +
-      (form.note ? `\nNote : ${form.note}` : "");
-    const msg = `Ma commande :\n${lines}\n\nTotal : ${total.toFixed(2)} €${info}`;
+    const username = tg?.initDataUnsafe?.user?.username || "";
 
-    if (tg && tg.showAlert) {
-      tg.HapticFeedback?.impactOccurred?.("medium");
-      tg.showAlert(`${msg}\n\nContacte-nous pour finaliser 👑`);
-    } else {
-      alert(msg);
+    setSending(true);
+    setOrderStatus(null);
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: cart,
+          total: `${total.toFixed(2)} €`,
+          customer: {
+            name: form.name,
+            mode: form.mode === "livraison" ? "Livraison" : "Meet-up",
+            address: form.address,
+            phone: form.phone,
+            note: form.note,
+            username,
+          },
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Envoi échoué");
+      tg?.HapticFeedback?.notificationOccurred?.("success");
+      clearCart();
+      setOrderStatus({
+        type: "ok",
+        msg: "Commande envoyée ✓ On te recontacte vite 👑",
+      });
+    } catch (err) {
+      setOrderStatus({ type: "err", msg: err.message });
+    } finally {
+      setSending(false);
     }
   }
 
   if (!ready) return <p className={ui.muted}>Chargement…</p>;
+
+  if (orderStatus && orderStatus.type === "ok") {
+    return (
+      <div className={ui.empty}>
+        <span className={styles.bigCart}>✅</span>
+        <span className={ui.emptyTitle}>Commande envoyée !</span>
+        <span className={ui.muted}>{orderStatus.msg}</span>
+        <Link href="/" className={styles.shopLink}>
+          Retour à l'accueil →
+        </Link>
+      </div>
+    );
+  }
 
   if (cart.length === 0) {
     return (
@@ -191,8 +220,17 @@ export default function CartSection() {
         </label>
       </div>
 
-      <button className={styles.checkout} type="button" onClick={commander}>
-        Commander
+      {orderStatus && orderStatus.type === "err" && (
+        <div className={styles.err}>{orderStatus.msg}</div>
+      )}
+
+      <button
+        className={styles.checkout}
+        type="button"
+        onClick={commander}
+        disabled={sending}
+      >
+        {sending ? "Envoi…" : "Commander"}
       </button>
       <button className={styles.clear} type="button" onClick={clearCart}>
         Vider le panier
