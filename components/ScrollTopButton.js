@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import styles from "./ScrollTopButton.module.css";
 
 export default function ScrollTopButton() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -14,6 +16,8 @@ export default function ScrollTopButton() {
   }, []);
 
   const toTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+  if (pathname && pathname.startsWith("/admin")) return null;
 
   return (
     <button

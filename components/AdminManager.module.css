@@ -21,32 +21,29 @@
   color: var(--muted);
 }
 
-/* Disposition : menu vertical à gauche + contenu à droite */
+/* Disposition : barre d'onglets en haut + contenu en dessous */
 .layout {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  flex-direction: column;
+  gap: 14px;
   padding: 10px 16px 0;
 }
 
 .sidebar {
-  flex: 0 0 116px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 8px;
-  position: sticky;
-  top: 10px;
 }
 
 .content {
-  flex: 1;
+  width: 100%;
   min-width: 0;
 }
 
-/* Éléments du menu latéral */
+/* Onglets en haut */
 .tab {
-  width: 100%;
-  text-align: left;
+  flex: 1;
+  text-align: center;
   padding: 11px 12px;
   border-radius: 10px;
   border: 1px solid var(--divider);

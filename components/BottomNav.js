@@ -56,6 +56,9 @@ function Icon({ id }) {
 export default function BottomNav() {
   const pathname = usePathname();
 
+  // Pas de barre de navigation sur les pages admin
+  if (pathname && pathname.startsWith("/admin")) return null;
+
   return (
     <nav className={styles.nav} aria-label="Navigation principale">
       {TABS.map((tab) => {
