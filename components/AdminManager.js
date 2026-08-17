@@ -273,6 +273,11 @@ export default function AdminManager() {
             ) : (
               list.map((item) => (
                 <div key={item.id} className={styles.itemRow}>
+                  <img
+                    src={item.image || "/product-placeholder.svg"}
+                    alt=""
+                    className={styles.itemThumb}
+                  />
                   <div className={styles.itemInfo}>
                     <span className={styles.itemName}>
                       {item.name}
