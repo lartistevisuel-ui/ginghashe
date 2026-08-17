@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { getProductsFromDB, addProductToDB } from "../../../lib/products-db";
+import {
+  getProductsFromDB,
+  addProductToDB,
+  deleteProductFromDB,
+} from "../../../lib/products-db";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +44,20 @@ export async function POST(req) {
   try {
     const created = await addProductToDB(product);
     return NextResponse.json(created, { status: 201 });
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+  if (!id) {
+    return NextResponse.json({ error: "id manquant." }, { status: 400 });
+  }
+  try {
+    await deleteProductFromDB(id);
+    return NextResponse.json({ ok: true });
   } catch (e) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

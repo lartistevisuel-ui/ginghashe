@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./admin.module.css";
 
 const EMPTY = {
@@ -19,8 +19,29 @@ const EMPTY = {
 
 export default function AdminPage() {
   const [form, setForm] = useState(EMPTY);
-  const [status, setStatus] = useState(null); // {type:'ok'|'err', msg}
+  const [status, setStatus] = useState(null);
   const [saving, setSaving] = useState(false);
+
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/products", { cache: "no-store" });
+      const data = await res.json();
+      setItems(Array.isArray(data) ? data : []);
+    } catch {
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const set = (key) => (e) => {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
@@ -41,6 +62,7 @@ export default function AdminPage() {
       if (!res.ok) throw new Error(data.error || "Erreur inconnue");
       setStatus({ type: "ok", msg: `Produit « ${data.name} » ajouté ✓` });
       setForm(EMPTY);
+      load();
     } catch (err) {
       setStatus({ type: "err", msg: err.message });
     } finally {
@@ -48,14 +70,36 @@ export default function AdminPage() {
     }
   }
 
+  async function remove(item) {
+    if (!confirm(`Supprimer « ${item.name} » ? Cette action est définitive.`)) return;
+    setDeletingId(item.id);
+    try {
+      const res = await fetch(`/api/products?id=${encodeURIComponent(item.id)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur");
+      setItems((list) => list.filter((p) => p.id !== item.id));
+    } catch (err) {
+      setStatus({ type: "err", msg: `Suppression échouée : ${err.message}` });
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  const sectionLabel = (s) => (s === "new" ? "Nouveautés" : "Best-sellers");
+
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Admin — Ajouter un produit</h1>
-        <p className={styles.subtitle}>Réservé au propriétaire de la boutique</p>
+        <h1 className={styles.title}>Admin — Produits</h1>
+        <p className={styles.subtitle}>Ajouter et gérer les produits de la boutique</p>
       </header>
 
+      {/* Formulaire d'ajout */}
       <form className={styles.form} onSubmit={submit}>
+        <h2 className={styles.sectionTitle}>Ajouter un produit</h2>
+
         <label className={styles.field}>
           <span className={styles.lbl}>Nom *</span>
           <input className={styles.input} value={form.name} onChange={set("name")} required placeholder="ICE HASH ENVOÛTER" />
@@ -89,7 +133,7 @@ export default function AdminPage() {
 
         <label className={styles.field}>
           <span className={styles.lbl}>Image (URL) — optionnel</span>
-          <input className={styles.input} value={form.image} onChange={set("image")} placeholder="https://… (laisser vide = placeholder)" />
+          <input className={styles.input} value={form.image} onChange={set("image")} placeholder="https://… (vide = placeholder)" />
         </label>
 
         <label className={styles.field}>
@@ -120,6 +164,38 @@ export default function AdminPage() {
           {saving ? "Enregistrement…" : "Ajouter le produit"}
         </button>
       </form>
+
+      {/* Liste des produits existants */}
+      <section className={styles.list}>
+        <h2 className={styles.sectionTitle}>
+          Produits existants {!loading && <span className={styles.count}>({items.length})</span>}
+        </h2>
+
+        {loading ? (
+          <p className={styles.muted}>Chargement…</p>
+        ) : items.length === 0 ? (
+          <p className={styles.muted}>Aucun produit pour l'instant. Ajoute-en un ci-dessus.</p>
+        ) : (
+          items.map((item) => (
+            <div key={item.id} className={styles.itemRow}>
+              <div className={styles.itemInfo}>
+                <span className={styles.itemName}>{item.name}</span>
+                <span className={styles.itemMeta}>
+                  {item.price} · {sectionLabel(item.section)}
+                </span>
+              </div>
+              <button
+                className={styles.delBtn}
+                type="button"
+                onClick={() => remove(item)}
+                disabled={deletingId === item.id}
+              >
+                {deletingId === item.id ? "…" : "Supprimer"}
+              </button>
+            </div>
+          ))
+        )}
+      </section>
     </main>
   );
 }
