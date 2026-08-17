@@ -18,12 +18,14 @@ export default function Home({ bestSellers = staticBest, nouveautes = staticNew 
         title="Best-sellers"
         icon={<StarIcon size={18} />}
         seeAllLabel="Tout voir →"
+        seeAllHref="/produits?section=best"
         products={bestSellers}
       />
       <ProductCarousel
         title="Nouveautés"
         icon={<SparkleIcon size={18} />}
-        seeAllLabel="Tous les produits →"
+        seeAllLabel="Tout voir →"
+        seeAllHref="/produits?section=new"
         products={nouveautes}
       />
     </main>

@@ -7,15 +7,41 @@ import { newArrivals as staticNew } from "../../data/newArrivals";
 import ui from "../../components/UI.module.css";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Tous les produits — KINGHASH 94" };
+export const metadata = { title: "Produits — KINGHASH 94" };
 
-export default async function ProduitsPage() {
+export default async function ProduitsPage({ searchParams }) {
+  const section = searchParams?.section;
   const db = await getProductsFromDB();
-  const list = db && db.length ? db : [...staticBest, ...staticNew];
+
+  let list;
+  let title = "Tous les produits";
+
+  if (db && db.length) {
+    if (section === "best") {
+      list = db.filter((p) => p.section !== "new");
+      title = "Best-sellers";
+    } else if (section === "new") {
+      list = db.filter((p) => p.section === "new");
+      title = "Nouveautés";
+    } else {
+      list = db;
+    }
+  } else {
+    // repli statique
+    if (section === "best") {
+      list = staticBest;
+      title = "Best-sellers";
+    } else if (section === "new") {
+      list = staticNew;
+      title = "Nouveautés";
+    } else {
+      list = [...staticBest, ...staticNew];
+    }
+  }
 
   return (
     <Page
-      title="Tous les produits"
+      title={title}
       subtitle={`${list.length} produit${list.length > 1 ? "s" : ""}`}
     >
       <div className={ui.stack}>
