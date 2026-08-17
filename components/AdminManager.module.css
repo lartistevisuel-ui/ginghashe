@@ -293,6 +293,12 @@
   color: var(--ivory);
 }
 
+.reviewStars {
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
 .ruptureTag {
   flex: 0 0 auto;
   padding: 2px 7px;

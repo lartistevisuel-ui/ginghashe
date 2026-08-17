@@ -1,0 +1,136 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.leaveBtn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: 1px solid var(--accent-soft);
+  background: rgba(79, 139, 255, 0.1);
+  color: var(--accent-soft);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--divider);
+  background: var(--bg-elevated);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--divider);
+  background: var(--bg-elevated-2);
+  color: var(--ivory);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--accent-soft);
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.starsPick {
+  display: flex;
+  gap: 4px;
+}
+
+.starBtn {
+  background: none;
+  border: none;
+  padding: 0 2px;
+  cursor: pointer;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.starOn {
+  color: var(--accent);
+}
+
+.starOff {
+  color: var(--divider);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cancel {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--divider);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.submit {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(180deg, #ef2b3d 0%, var(--accent) 100%);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.muted {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.ok,
+.err {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ok {
+  background: rgba(61, 220, 132, 0.12);
+  border: 1px solid rgba(61, 220, 132, 0.5);
+  color: #4fe0a0;
+}
+
+.err {
+  background: rgba(225, 29, 42, 0.12);
+  border: 1px solid rgba(225, 29, 42, 0.5);
+  color: #ff8088;
+}

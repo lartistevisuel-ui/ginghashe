@@ -7,6 +7,7 @@ import { categories } from "../data/categories";
 const TABS = [
   { section: "best", label: "Best-sellers" },
   { section: "new", label: "Nouveautés" },
+  { section: "avis", label: "Avis" },
 ];
 
 const emptyForm = () => ({
@@ -37,6 +38,10 @@ export default function AdminManager() {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
 
+  const [reviews, setReviews] = useState([]);
+  const [loadingReviews, setLoadingReviews] = useState(false);
+  const [deletingReviewId, setDeletingReviewId] = useState(null);
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -53,6 +58,39 @@ export default function AdminManager() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const loadReviews = useCallback(async () => {
+    setLoadingReviews(true);
+    try {
+      const res = await fetch("/api/reviews", { cache: "no-store" });
+      const data = await res.json();
+      setReviews(Array.isArray(data) ? data : []);
+    } catch {
+      setReviews([]);
+    } finally {
+      setLoadingReviews(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (section === "avis") loadReviews();
+  }, [section, loadReviews]);
+
+  async function removeReview(review) {
+    if (!confirm(`Supprimer l'avis de « ${review.author} » ?`)) return;
+    setDeletingReviewId(review.id);
+    try {
+      const res = await fetch(`/api/reviews?id=${encodeURIComponent(review.id)}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error();
+      setReviews((list) => list.filter((r) => r.id !== review.id));
+    } catch {
+      setStatus({ type: "err", msg: "Suppression de l'avis échouée." });
+    } finally {
+      setDeletingReviewId(null);
+    }
+  }
 
   const set = (key) => (e) => {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
@@ -186,6 +224,8 @@ export default function AdminManager() {
         </nav>
 
         <div className={styles.content}>
+          {section !== "avis" && (
+          <>
           <form className={styles.form} onSubmit={submit}>
             <h2 className={styles.sectionTitle}>Ajouter dans « {current.label} »</h2>
 
@@ -329,6 +369,46 @@ export default function AdminManager() {
               ))
             )}
           </section>
+          </>
+          )}
+
+          {section === "avis" && (
+            <section className={styles.list}>
+              <h2 className={styles.sectionTitle}>
+                Avis clients{" "}
+                {!loadingReviews && <span className={styles.count}>({reviews.length})</span>}
+              </h2>
+              {loadingReviews ? (
+                <p className={styles.muted}>Chargement…</p>
+              ) : reviews.length === 0 ? (
+                <p className={styles.muted}>Aucun avis pour l'instant.</p>
+              ) : (
+                reviews.map((r) => (
+                  <div key={r.id} className={styles.itemRow}>
+                    <div className={styles.itemInfo}>
+                      <span className={styles.itemName}>
+                        {r.author}{" "}
+                        <span className={styles.reviewStars}>
+                          {"★".repeat(Math.max(0, Math.min(5, Number(r.stars) || 0)))}
+                        </span>
+                      </span>
+                      <span className={styles.itemMeta}>{r.message}</span>
+                    </div>
+                    <div className={styles.itemActions}>
+                      <button
+                        className={styles.delBtn}
+                        type="button"
+                        onClick={() => removeReview(r)}
+                        disabled={deletingReviewId === r.id}
+                      >
+                        {deletingReviewId === r.id ? "…" : "Supprimer"}
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </section>
+          )}
         </div>
       </div>
     </main>
