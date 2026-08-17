@@ -1,12 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import styles from "./AdminManager.module.css";
 
 const TABS = [
-  { section: "best", label: "Best-sellers", href: "/admin" },
-  { section: "new", label: "Nouveautés", href: "/admin/nouveautes" },
+  { section: "best", label: "Best-sellers" },
+  { section: "new", label: "Nouveautés" },
 ];
 
 const emptyForm = () => ({
@@ -22,7 +21,8 @@ const emptyForm = () => ({
   vitrine: false,
 });
 
-export default function AdminManager({ section }) {
+export default function AdminManager() {
+  const [section, setSection] = useState("best");
   const current = TABS.find((t) => t.section === section) || TABS[0];
 
   const [form, setForm] = useState(emptyForm());
@@ -101,24 +101,28 @@ export default function AdminManager({ section }) {
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Admin — {current.label}</h1>
-        <p className={styles.subtitle}>Gérer les produits « {current.label} »</p>
+        <h1 className={styles.title}>Admin — Produits</h1>
+        <p className={styles.subtitle}>Ajouter et gérer tous les produits</p>
       </header>
 
       <div className={styles.tabs}>
         {TABS.map((t) => (
-          <Link
+          <button
             key={t.section}
-            href={t.href}
+            type="button"
+            onClick={() => {
+              setSection(t.section);
+              setStatus(null);
+            }}
             className={`${styles.tab} ${t.section === section ? styles.tabActive : ""}`}
           >
             {t.label}
-          </Link>
+          </button>
         ))}
       </div>
 
       <form className={styles.form} onSubmit={submit}>
-        <h2 className={styles.sectionTitle}>Ajouter un produit</h2>
+        <h2 className={styles.sectionTitle}>Ajouter dans « {current.label} »</h2>
 
         <label className={styles.field}>
           <span className={styles.lbl}>Nom *</span>
@@ -173,7 +177,7 @@ export default function AdminManager({ section }) {
         )}
 
         <button className={styles.submit} type="submit" disabled={saving}>
-          {saving ? "Enregistrement…" : `Ajouter à ${current.label}`}
+          {saving ? "Enregistrement…" : `Ajouter dans ${current.label}`}
         </button>
       </form>
 
