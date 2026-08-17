@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import styles from "./ProductCard.module.css";
-import { TruckIcon, PinIcon, EyeIcon, StarIcon, ChevronDownIcon } from "./Icons";
+import styles from "./ProductDetail.module.css";
+import { TruckIcon, PinIcon, EyeIcon } from "./Icons";
 
-export default function ProductCard({ product, fluid }) {
+export default function ProductDetail({ product }) {
   const tiers =
     Array.isArray(product.prices) && product.prices.length
       ? product.prices
@@ -15,14 +15,29 @@ export default function ProductCard({ product, fluid }) {
   const current = tiers[idx] || tiers[0];
   const multi = tiers.length > 1;
 
+  function commander() {
+    const tg = typeof window !== "undefined" && window.Telegram?.WebApp;
+    const line = `${product.name}${current.weight ? " — " + current.weight : ""} : ${current.price}`;
+    if (tg && tg.showAlert) {
+      tg.HapticFeedback?.impactOccurred?.("medium");
+      tg.showAlert(`Commande :\n${line}\n\nContacte-nous pour finaliser 👑`);
+    } else {
+      alert(`Commande :\n${line}`);
+    }
+  }
+
   return (
-    <article className={`${styles.card} ${fluid ? styles.fluid : ""}`}>
+    <main className={styles.page}>
       <div className={styles.media}>
         <img
           src={product.image || "/product-placeholder.svg"}
           alt={product.name}
           className={styles.image}
         />
+
+        <Link href="/produits" className={styles.back} aria-label="Retour">
+          ←
+        </Link>
 
         <div className={styles.badges}>
           {product.postal && (
@@ -42,10 +57,6 @@ export default function ProductCard({ product, fluid }) {
           )}
         </div>
 
-        <button className={styles.fav} type="button" aria-label="Favori">
-          <StarIcon size={15} />
-        </button>
-
         {product.soldout && (
           <div className={styles.soldout}>
             <svg
@@ -64,43 +75,45 @@ export default function ProductCard({ product, fluid }) {
       </div>
 
       <div className={styles.body}>
-        <h3 className={styles.name}>{product.name}</h3>
+        <h1 className={styles.name}>{product.name}</h1>
         {product.grade && <span className={styles.grade}>{product.grade}</span>}
+        {product.variant && <div className={styles.variant}>🌿 {product.variant}</div>}
         {product.description && (
           <p className={styles.description}>{product.description}</p>
         )}
 
-        {product.variant && (
-          <button className={styles.variant} type="button">
-            <span>{product.variant}</span>
-            <ChevronDownIcon className={styles.chevron} size={15} />
-          </button>
-        )}
-
         {multi && (
-          <div className={styles.weights}>
-            {tiers.map((t, i) => (
-              <button
-                key={i}
-                type="button"
-                className={`${styles.weightChip} ${i === idx ? styles.weightChipActive : ""}`}
-                onClick={() => setIdx(i)}
-              >
-                {t.weight}
-              </button>
-            ))}
-          </div>
+          <>
+            <span className={styles.pickLabel}>Choisis la quantité</span>
+            <div className={styles.weights}>
+              {tiers.map((t, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className={`${styles.weightChip} ${i === idx ? styles.weightChipActive : ""}`}
+                  onClick={() => setIdx(i)}
+                >
+                  {t.weight}
+                </button>
+              ))}
+            </div>
+          </>
         )}
 
         <div className={styles.priceRow}>
-          <span className={styles.weight}>{current.weight}</span>
+          <span className={styles.priceLbl}>{current.weight || "Prix"}</span>
           <span className={styles.price}>{current.price}</span>
         </div>
 
-        <Link href={`/produit/${product.id}`} className={styles.cta}>
-          VOIR LE PRODUIT
-        </Link>
+        <button
+          className={styles.cta}
+          type="button"
+          onClick={commander}
+          disabled={product.soldout}
+        >
+          {product.soldout ? "Produit en rupture" : "Commander"}
+        </button>
       </div>
-    </article>
+    </main>
   );
 }
