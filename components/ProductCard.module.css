@@ -146,6 +146,31 @@
   font-size: 11px;
 }
 
+/* Sélecteur de poids (plusieurs tarifs) */
+.weights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.weightChip {
+  padding: 6px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.weightChipActive {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(180deg, #ef2b3d 0%, var(--accent) 100%);
+}
+
 /* Ligne poids + prix */
 .priceRow {
   display: flex;

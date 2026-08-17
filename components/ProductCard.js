@@ -1,7 +1,19 @@
+"use client";
+
+import { useState } from "react";
 import styles from "./ProductCard.module.css";
 import { TruckIcon, PinIcon, EyeIcon, StarIcon, ChevronDownIcon } from "./Icons";
 
 export default function ProductCard({ product }) {
+  const tiers =
+    Array.isArray(product.prices) && product.prices.length
+      ? product.prices
+      : [{ weight: product.weight, price: product.price }];
+
+  const [idx, setIdx] = useState(0);
+  const current = tiers[idx] || tiers[0];
+  const multi = tiers.length > 1;
+
   return (
     <article className={styles.card}>
       <div className={styles.media}>
@@ -36,17 +48,36 @@ export default function ProductCard({ product }) {
 
       <div className={styles.body}>
         <h3 className={styles.name}>{product.name}</h3>
-        <span className={styles.grade}>{product.grade}</span>
-        <p className={styles.description}>{product.description}</p>
+        {product.grade && <span className={styles.grade}>{product.grade}</span>}
+        {product.description && (
+          <p className={styles.description}>{product.description}</p>
+        )}
 
-        <button className={styles.variant} type="button">
-          <span>{product.variant}</span>
-          <ChevronDownIcon className={styles.chevron} size={15} />
-        </button>
+        {product.variant && (
+          <button className={styles.variant} type="button">
+            <span>{product.variant}</span>
+            <ChevronDownIcon className={styles.chevron} size={15} />
+          </button>
+        )}
+
+        {multi && (
+          <div className={styles.weights}>
+            {tiers.map((t, i) => (
+              <button
+                key={i}
+                type="button"
+                className={`${styles.weightChip} ${i === idx ? styles.weightChipActive : ""}`}
+                onClick={() => setIdx(i)}
+              >
+                {t.weight}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className={styles.priceRow}>
-          <span className={styles.weight}>{product.weight}</span>
-          <span className={styles.price}>{product.price}</span>
+          <span className={styles.weight}>{current.weight}</span>
+          <span className={styles.price}>{current.price}</span>
         </div>
 
         <button className={styles.cta} type="button">

@@ -112,6 +112,65 @@
   resize: vertical;
 }
 
+/* Upload photo */
+.upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  border: 1px dashed var(--divider);
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.uploadHint {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.previewImg {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Lignes de tarifs multiples */
+.tierRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.tierDel {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--divider);
+  background: var(--bg-elevated);
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.addTier {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--accent-soft);
+  background: rgba(79, 139, 255, 0.08);
+  color: var(--accent-soft);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .checks {
   display: flex;
   flex-wrap: wrap;

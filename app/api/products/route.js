@@ -27,6 +27,15 @@ export async function POST(req) {
     );
   }
 
+  const prices = Array.isArray(body.prices)
+    ? body.prices
+        .map((t) => ({
+          weight: t.weight ? String(t.weight).trim() : "",
+          price: t.price ? String(t.price).trim() : "",
+        }))
+        .filter((t) => t.weight || t.price)
+    : [];
+
   const product = {
     name: String(body.name).trim(),
     grade: body.grade ? String(body.grade).trim() : "",
@@ -34,6 +43,7 @@ export async function POST(req) {
     variant: body.variant ? String(body.variant).trim() : "",
     weight: body.weight ? String(body.weight).trim() : "",
     price: String(body.price).trim(),
+    prices,
     postal: Boolean(body.postal),
     meetup: Boolean(body.meetup),
     vitrine: Boolean(body.vitrine),
