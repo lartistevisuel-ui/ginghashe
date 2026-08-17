@@ -105,23 +105,25 @@ export default function AdminManager() {
         <p className={styles.subtitle}>Ajouter et gérer tous les produits</p>
       </header>
 
-      <div className={styles.tabs}>
-        {TABS.map((t) => (
-          <button
-            key={t.section}
-            type="button"
-            onClick={() => {
-              setSection(t.section);
-              setStatus(null);
-            }}
-            className={`${styles.tab} ${t.section === section ? styles.tabActive : ""}`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      <div className={styles.layout}>
+        <nav className={styles.sidebar}>
+          {TABS.map((t) => (
+            <button
+              key={t.section}
+              type="button"
+              onClick={() => {
+                setSection(t.section);
+                setStatus(null);
+              }}
+              className={`${styles.tab} ${t.section === section ? styles.tabActive : ""}`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </nav>
 
-      <form className={styles.form} onSubmit={submit}>
+        <div className={styles.content}>
+          <form className={styles.form} onSubmit={submit}>
         <h2 className={styles.sectionTitle}>Ajouter dans « {current.label} »</h2>
 
         <label className={styles.field}>
@@ -209,6 +211,8 @@ export default function AdminManager() {
           ))
         )}
       </section>
+        </div>
+      </div>
     </main>
   );
 }
