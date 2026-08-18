@@ -114,7 +114,26 @@ export default function ChatSection() {
         <div className={styles.headInfo}>
           <span className={styles.headTitle}>Tchat Groupe</span>
           <span className={styles.headSub}>
-            👥 {members} membre{members > 1 ? "s" : ""} · <span className={styles.online}>● en direct</span>
+            <svg
+              className={styles.peopleIcon}
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="9" cy="8.5" r="3" />
+              <path d="M2.8 19a6.2 6.2 0 0 1 12.4 0" />
+              <path d="M16 6a3 3 0 0 1 0 5.5" />
+              <path d="M21 19a5 5 0 0 0-3.5-4.8" />
+            </svg>
+            {members} membre{members > 1 ? "s" : ""}
+            <span className={styles.sep}>·</span>
+            <span className={styles.onlineDot} />
+            <span className={styles.online}>1 en ligne</span>
           </span>
         </div>
         <img src="/logo.png" alt="" className={styles.headAvatar} />
