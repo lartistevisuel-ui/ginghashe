@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { setOrderStatus } from "../../../lib/products-db";
 
 export const dynamic = "force-dynamic";
 
@@ -29,10 +30,20 @@ export async function POST(req) {
   const cb = update.callback_query;
   if (cb) {
     const data = cb.data || "";
-    const accepted = data === "accept";
-    const refused = data === "refuse";
+    const [action, orderId] = data.split(":");
+    const accepted = action === "accept";
+    const refused = action === "refuse";
 
     if (accepted || refused) {
+      // Met à jour le statut en base (le client verra la mise à jour)
+      if (orderId) {
+        try {
+          await setOrderStatus(orderId, accepted ? "accepted" : "refused");
+        } catch {
+          /* ignore */
+        }
+      }
+
       const original = cb.message?.text || "";
       const statusLine = accepted
         ? "\n\n✅ COMMANDE ACCEPTÉE"

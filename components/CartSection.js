@@ -78,6 +78,7 @@ export default function CartSection() {
             phone: form.phone,
             note: form.note,
             username,
+            uid: tg?.initDataUnsafe?.user?.id || "",
           },
         }),
       });
@@ -85,6 +86,7 @@ export default function CartSection() {
       if (!res.ok) throw new Error(data.error || "Envoi échoué");
       tg?.HapticFeedback?.notificationOccurred?.("success");
       addOrder({
+        id: data.id || "",
         items: cart.map((c) => ({
           name: c.name,
           weight: c.weight,
@@ -113,8 +115,11 @@ export default function CartSection() {
         <span className={styles.bigCart}>✅</span>
         <span className={ui.emptyTitle}>Commande envoyée !</span>
         <span className={ui.muted}>{orderStatus.msg}</span>
+        <Link href="/compte" className={styles.shopLink}>
+          📦 Voir ma commande →
+        </Link>
         <Link href="/" className={styles.shopLink}>
-          Retour à l'accueil →
+          Retour à l'accueil
         </Link>
       </div>
     );

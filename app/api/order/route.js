@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { addOrderToDB } from "../../../lib/products-db";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +32,20 @@ export async function POST(req) {
     return NextResponse.json({ error: "Infos client manquantes." }, { status: 400 });
   }
 
+  // Enregistre la commande en base (pour le suivi de statut côté client)
+  const saved = await addOrderToDB({
+    uid: customer.uid ? String(customer.uid) : "",
+    customer_name: customer.name,
+    mode: customer.mode,
+    address: customer.address || "",
+    phone: customer.phone || "",
+    note: customer.note || "",
+    items,
+    total: String(total),
+    status: "pending",
+  });
+  const orderId = saved?.id || "";
+
   const lines = items
     .map(
       (c) =>
@@ -58,8 +73,14 @@ export async function POST(req) {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: "✅ Accepter", callback_data: "accept" },
-            { text: "❌ Refuser", callback_data: "refuse" },
+            {
+              text: "✅ Accepter",
+              callback_data: orderId ? `accept:${orderId}` : "accept",
+            },
+            {
+              text: "❌ Refuser",
+              callback_data: orderId ? `refuse:${orderId}` : "refuse",
+            },
           ],
         ],
       },
@@ -73,5 +94,5 @@ export async function POST(req) {
     );
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, id: orderId });
 }

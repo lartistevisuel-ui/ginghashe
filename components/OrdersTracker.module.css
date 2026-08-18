@@ -21,8 +21,9 @@
 
 .head {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 
 .date {
@@ -33,11 +34,26 @@
 .status {
   font-size: 11px;
   font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.pending {
   color: #ffcf6b;
   background: rgba(242, 193, 78, 0.14);
   border: 1px solid rgba(242, 193, 78, 0.45);
-  padding: 3px 9px;
-  border-radius: 999px;
+}
+
+.accepted {
+  color: #4fe0a0;
+  background: rgba(61, 220, 132, 0.14);
+  border: 1px solid rgba(61, 220, 132, 0.5);
+}
+
+.refused {
+  color: #ff8088;
+  background: rgba(225, 29, 42, 0.14);
+  border: 1px solid rgba(225, 29, 42, 0.5);
 }
 
 .items {

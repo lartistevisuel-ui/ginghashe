@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./OrdersTracker.module.css";
-import { getOrders, markOrdersSeen } from "../lib/orders";
+import {
+  getOrders,
+  markOrdersSeen,
+  updateStatuses,
+  orderIds,
+} from "../lib/orders";
 
 function fmt(ts) {
   try {
@@ -17,18 +22,47 @@ function fmt(ts) {
   }
 }
 
+const STATUS = {
+  pending: { label: "⏳ En attente de confirmation", cls: "pending" },
+  accepted: { label: "✅ Acceptée — on va vous contacter", cls: "accepted" },
+  refused: { label: "❌ Commande refusée", cls: "refused" },
+};
+
 export default function OrdersTracker() {
   const [orders, setOrders] = useState([]);
   const [ready, setReady] = useState(false);
 
+  const refresh = useCallback(() => setOrders(getOrders()), []);
+
+  const poll = useCallback(async () => {
+    const ids = orderIds();
+    if (ids.length === 0) return;
+    try {
+      const res = await fetch(`/api/orders?ids=${ids.join(",")}`, {
+        cache: "no-store",
+      });
+      const rows = await res.json();
+      updateStatuses(rows);
+      refresh();
+      markOrdersSeen(); // on regarde la page → statuts vus
+    } catch {
+      /* ignore */
+    }
+  }, [refresh]);
+
   useEffect(() => {
-    setOrders(getOrders());
+    refresh();
     setReady(true);
-    markOrdersSeen(); // en ouvrant la page, on "voit" les commandes → le point rouge s'éteint
-    const sync = () => setOrders(getOrders());
+    markOrdersSeen();
+    poll();
+    const t = setInterval(poll, 8000);
+    const sync = () => refresh();
     window.addEventListener("orders-changed", sync);
-    return () => window.removeEventListener("orders-changed", sync);
-  }, []);
+    return () => {
+      clearInterval(t);
+      window.removeEventListener("orders-changed", sync);
+    };
+  }, [poll, refresh]);
 
   if (!ready) return null;
 
@@ -38,25 +72,30 @@ export default function OrdersTracker() {
 
   return (
     <div className={styles.list}>
-      {orders.map((o) => (
-        <div key={o.id} className={styles.order}>
-          <div className={styles.head}>
-            <span className={styles.date}>{fmt(o.date)}</span>
-            <span className={styles.status}>{o.status}</span>
+      {orders.map((o) => {
+        const st = STATUS[o.status] || STATUS.pending;
+        return (
+          <div key={o.id || o.date} className={styles.order}>
+            <div className={styles.head}>
+              <span className={styles.date}>{fmt(o.date)}</span>
+              <span className={`${styles.status} ${styles[st.cls]}`}>
+                {st.label}
+              </span>
+            </div>
+            <div className={styles.items}>
+              {(o.items || [])
+                .map(
+                  (i) => `${i.name}${i.weight ? " (" + i.weight + ")" : ""} ×${i.qty}`
+                )
+                .join(", ")}
+            </div>
+            <div className={styles.foot}>
+              <span className={styles.mode}>{o.mode}</span>
+              <span className={styles.total}>{o.total}</span>
+            </div>
           </div>
-          <div className={styles.items}>
-            {(o.items || [])
-              .map(
-                (i) => `${i.name}${i.weight ? " (" + i.weight + ")" : ""} ×${i.qty}`
-              )
-              .join(", ")}
-          </div>
-          <div className={styles.foot}>
-            <span className={styles.mode}>{o.mode}</span>
-            <span className={styles.total}>{o.total}</span>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
