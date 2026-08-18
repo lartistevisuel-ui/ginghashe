@@ -12,6 +12,20 @@ import {
   parsePrice,
 } from "../lib/cart";
 import { addOrder } from "../lib/orders";
+import { TruckIcon, PinIcon } from "./Icons";
+
+const CartGlyph = ({ size = 24 }) => (
+  <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 8h12l-1 11a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1L6 8Z" />
+    <path d="M9 8a3 3 0 0 1 6 0" />
+  </svg>
+);
+const CheckGlyph = ({ size = 48 }) => (
+  <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="9" />
+    <path d="m8.5 12 2.4 2.4L15.5 9.5" />
+  </svg>
+);
 
 export default function CartSection() {
   const [cart, setCart] = useState([]);
@@ -107,28 +121,33 @@ export default function CartSection() {
     }
   }
 
-  if (!ready) return <p className={ui.muted}>Chargement…</p>;
+  const count = cart.reduce((n, c) => n + c.qty, 0);
 
-  if (orderStatus && orderStatus.type === "ok") {
-    return (
+  let content;
+  if (!ready) {
+    content = <p className={ui.muted}>Chargement…</p>;
+  } else if (orderStatus && orderStatus.type === "ok") {
+    content = (
       <div className={ui.empty}>
-        <span className={styles.bigCart}>✅</span>
+        <span className={styles.successIcon}>
+          <CheckGlyph />
+        </span>
         <span className={ui.emptyTitle}>Commande envoyée !</span>
         <span className={ui.muted}>{orderStatus.msg}</span>
         <Link href="/compte" className={styles.shopLink}>
-          📦 Voir ma commande →
+          Voir ma commande →
         </Link>
         <Link href="/" className={styles.shopLink}>
           Retour à l'accueil
         </Link>
       </div>
     );
-  }
-
-  if (cart.length === 0) {
-    return (
+  } else if (cart.length === 0) {
+    content = (
       <div className={ui.empty}>
-        <span className={styles.bigCart}>🛒</span>
+        <span className={styles.emptyIcon}>
+          <CartGlyph size={46} />
+        </span>
         <span className={ui.emptyTitle}>Ton panier est vide</span>
         <span className={ui.muted}>Ajoute des produits pour les retrouver ici.</span>
         <Link href="/produits" className={styles.shopLink}>
@@ -136,9 +155,8 @@ export default function CartSection() {
         </Link>
       </div>
     );
-  }
-
-  return (
+  } else {
+    content = (
     <div className={styles.wrap}>
       {cart.map((c) => (
         <div key={c.key} className={styles.row}>
@@ -200,14 +218,14 @@ export default function CartSection() {
             className={`${styles.modeBtn} ${form.mode === "livraison" ? styles.modeActive : ""}`}
             onClick={() => setForm((f) => ({ ...f, mode: "livraison" }))}
           >
-            🚚 Livraison
+            <TruckIcon size={15} /> Livraison
           </button>
           <button
             type="button"
             className={`${styles.modeBtn} ${form.mode === "meetup" ? styles.modeActive : ""}`}
             onClick={() => setForm((f) => ({ ...f, mode: "meetup" }))}
           >
-            📍 Meet-up
+            <PinIcon size={15} /> Meet-up
           </button>
         </div>
 
@@ -250,6 +268,26 @@ export default function CartSection() {
       <button className={styles.clear} type="button" onClick={clearCart}>
         Vider le panier
       </button>
-    </div>
+      </div>
+    );
+  }
+
+  return (
+    <main className={styles.page}>
+      <header className={styles.banner}>
+        <span className={styles.bannerIcon}>
+          <CartGlyph size={22} />
+        </span>
+        <div>
+          <h1 className={styles.bannerTitle}>Mon panier</h1>
+          <p className={styles.bannerSub}>
+            {cart.length > 0
+              ? `${count} article${count > 1 ? "s" : ""} dans ton panier`
+              : "Tes articles sélectionnés"}
+          </p>
+        </div>
+      </header>
+      <div className={styles.body}>{content}</div>
+    </main>
   );
 }
