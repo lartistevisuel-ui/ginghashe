@@ -1,5 +1,6 @@
 import Page from "../../components/Page";
 import ui from "../../components/UI.module.css";
+import OrdersTracker from "../../components/OrdersTracker";
 
 export const metadata = { title: "Compte — KINGHASH 94" };
 
@@ -30,13 +31,9 @@ export default function ComptePage() {
         </div>
 
         <div className={ui.panel}>
-          <p className={ui.faqQ}>Mes commandes</p>
-          <p className={ui.faqA}>Aucune commande pour le moment.</p>
+          <p className={ui.faqQ}>📦 Suivi de commande</p>
+          <OrdersTracker />
         </div>
-
-        <button className={ui.btn} type="button">
-          Se connecter via Telegram
-        </button>
       </div>
     </Page>
   );

@@ -11,6 +11,7 @@ import {
   clearCart,
   parsePrice,
 } from "../lib/cart";
+import { addOrder } from "../lib/orders";
 
 export default function CartSection() {
   const [cart, setCart] = useState([]);
@@ -83,6 +84,15 @@ export default function CartSection() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Envoi échoué");
       tg?.HapticFeedback?.notificationOccurred?.("success");
+      addOrder({
+        items: cart.map((c) => ({
+          name: c.name,
+          weight: c.weight,
+          qty: c.qty,
+        })),
+        total: `${total.toFixed(2)} €`,
+        mode: form.mode === "livraison" ? "Livraison" : "Meet-up",
+      });
       clearCart();
       setOrderStatus({
         type: "ok",

@@ -44,6 +44,17 @@
   transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
+.dot {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px rgba(19, 24, 41, 0.9), 0 0 8px rgba(225, 29, 42, 0.7);
+}
+
 .badge {
   position: absolute;
   top: 2px;

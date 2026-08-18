@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./BottomNav.module.css";
 import { cartCount } from "../lib/cart";
+import { hasUnseenOrders } from "../lib/orders";
 
 const TABS = [
   { id: "home", label: "Accueil", href: "/" },
@@ -66,12 +67,21 @@ function Icon({ id }) {
 export default function BottomNav() {
   const pathname = usePathname();
   const [count, setCount] = useState(0);
+  const [ordersDot, setOrdersDot] = useState(false);
 
   useEffect(() => {
     const sync = () => setCount(cartCount());
     sync();
     window.addEventListener("cart-changed", sync);
-    return () => window.removeEventListener("cart-changed", sync);
+
+    const syncOrders = () => setOrdersDot(hasUnseenOrders());
+    syncOrders();
+    window.addEventListener("orders-changed", syncOrders);
+
+    return () => {
+      window.removeEventListener("cart-changed", sync);
+      window.removeEventListener("orders-changed", syncOrders);
+    };
   }, []);
 
   // Pas de barre de navigation sur les pages admin
@@ -98,6 +108,9 @@ export default function BottomNav() {
               <Icon id={tab.id} />
               {tab.id === "cart" && count > 0 && (
                 <span className={styles.badge}>{count}</span>
+              )}
+              {tab.id === "account" && ordersDot && (
+                <span className={styles.dot} />
               )}
             </span>
           </Link>
