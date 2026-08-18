@@ -50,6 +50,12 @@
   border: 1px solid rgba(61, 220, 132, 0.5);
 }
 
+.finalized {
+  color: #7fb0ff;
+  background: rgba(79, 139, 255, 0.14);
+  border: 1px solid rgba(79, 139, 255, 0.5);
+}
+
 .refused {
   color: #ff8088;
   background: rgba(225, 29, 42, 0.14);

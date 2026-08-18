@@ -31,33 +31,59 @@ export async function POST(req) {
   if (cb) {
     const data = cb.data || "";
     const [action, orderId] = data.split(":");
-    const accepted = action === "accept";
-    const refused = action === "refuse";
+    const original = cb.message?.text || "";
+    const chat_id = cb.message?.chat?.id;
+    const message_id = cb.message?.message_id;
 
-    if (accepted || refused) {
-      // Met à jour le statut en base (le client verra la mise à jour)
+    const config = {
+      accept: {
+        status: "accepted",
+        line: "\n\n✅ COMMANDE ACCEPTÉE",
+        toast: "Acceptée ✅",
+        // Un bouton pour finaliser apparaît
+        keyboard: {
+          inline_keyboard: [
+            [
+              {
+                text: "🏁 Finaliser la commande",
+                callback_data: orderId ? `finalize:${orderId}` : "finalize",
+              },
+            ],
+          ],
+        },
+      },
+      finalize: {
+        status: "finalized",
+        line: "\n🏁 COMMANDE FINALISÉE — produit remis",
+        toast: "Finalisée 🏁",
+        keyboard: undefined, // retire les boutons
+      },
+      refuse: {
+        status: "refused",
+        line: "\n\n❌ COMMANDE REFUSÉE",
+        toast: "Refusée ❌",
+        keyboard: undefined,
+      },
+    };
+
+    const conf = config[action];
+    if (conf) {
       if (orderId) {
         try {
-          await setOrderStatus(orderId, accepted ? "accepted" : "refused");
+          await setOrderStatus(orderId, conf.status);
         } catch {
           /* ignore */
         }
       }
-
-      const original = cb.message?.text || "";
-      const statusLine = accepted
-        ? "\n\n✅ COMMANDE ACCEPTÉE"
-        : "\n\n❌ COMMANDE REFUSÉE";
-
-      // Met à jour le message et retire les boutons
       await tg("editMessageText", {
-        chat_id: cb.message.chat.id,
-        message_id: cb.message.message_id,
-        text: original + statusLine,
+        chat_id,
+        message_id,
+        text: original + conf.line,
+        ...(conf.keyboard ? { reply_markup: conf.keyboard } : {}),
       });
       await tg("answerCallbackQuery", {
         callback_query_id: cb.id,
-        text: accepted ? "Commande acceptée ✅" : "Commande refusée ❌",
+        text: conf.toast,
       });
     } else {
       await tg("answerCallbackQuery", { callback_query_id: cb.id });

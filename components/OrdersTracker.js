@@ -25,6 +25,7 @@ function fmt(ts) {
 const STATUS = {
   pending: { label: "⏳ En attente de confirmation", cls: "pending" },
   accepted: { label: "✅ Acceptée — on va vous contacter", cls: "accepted" },
+  finalized: { label: "🏁 Finalisée — produit récupéré 🎉", cls: "finalized" },
   refused: { label: "❌ Commande refusée", cls: "refused" },
 };
 
