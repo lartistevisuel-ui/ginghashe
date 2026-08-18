@@ -7,7 +7,7 @@ import { categories } from "../data/categories";
 const TABS = [
   { section: "best", label: "Best-sellers" },
   { section: "new", label: "Nouveautés" },
-  { section: "avis", label: "Avis" },
+  { section: "avis", label: "Tchat" },
 ];
 
 const emptyForm = () => ({
@@ -62,9 +62,9 @@ export default function AdminManager() {
   const loadReviews = useCallback(async () => {
     setLoadingReviews(true);
     try {
-      const res = await fetch("/api/reviews", { cache: "no-store" });
+      const res = await fetch("/api/chat", { cache: "no-store" });
       const data = await res.json();
-      setReviews(Array.isArray(data) ? data : []);
+      setReviews(Array.isArray(data) ? data.slice().reverse() : []);
     } catch {
       setReviews([]);
     } finally {
@@ -77,10 +77,10 @@ export default function AdminManager() {
   }, [section, loadReviews]);
 
   async function removeReview(review) {
-    if (!confirm(`Supprimer l'avis de « ${review.author} » ?`)) return;
+    if (!confirm(`Supprimer le message de « ${review.author} » ?`)) return;
     setDeletingReviewId(review.id);
     try {
-      const res = await fetch(`/api/reviews?id=${encodeURIComponent(review.id)}`, {
+      const res = await fetch(`/api/chat?id=${encodeURIComponent(review.id)}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error();
@@ -375,23 +375,18 @@ export default function AdminManager() {
           {section === "avis" && (
             <section className={styles.list}>
               <h2 className={styles.sectionTitle}>
-                Avis clients{" "}
+                Messages du tchat{" "}
                 {!loadingReviews && <span className={styles.count}>({reviews.length})</span>}
               </h2>
               {loadingReviews ? (
                 <p className={styles.muted}>Chargement…</p>
               ) : reviews.length === 0 ? (
-                <p className={styles.muted}>Aucun avis pour l'instant.</p>
+                <p className={styles.muted}>Aucun message pour l'instant.</p>
               ) : (
                 reviews.map((r) => (
                   <div key={r.id} className={styles.itemRow}>
                     <div className={styles.itemInfo}>
-                      <span className={styles.itemName}>
-                        {r.author}{" "}
-                        <span className={styles.reviewStars}>
-                          {"★".repeat(Math.max(0, Math.min(5, Number(r.stars) || 0)))}
-                        </span>
-                      </span>
+                      <span className={styles.itemName}>{r.author}</span>
                       <span className={styles.itemMeta}>{r.message}</span>
                     </div>
                     <div className={styles.itemActions}>

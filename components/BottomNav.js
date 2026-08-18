@@ -11,7 +11,7 @@ const TABS = [
   { id: "home", label: "Accueil", href: "/" },
   { id: "favorites", label: "Favoris", href: "/favoris" },
   { id: "cart", label: "Panier", href: "/panier" },
-  { id: "reviews", label: "Avis", href: "/avis" },
+  { id: "reviews", label: "Tchat", href: "/tchat" },
   { id: "help", label: "Aide", href: "/aide" },
   { id: "account", label: "Compte", href: "/compte" },
 ];
