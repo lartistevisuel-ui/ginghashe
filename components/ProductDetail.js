@@ -5,6 +5,7 @@ import Link from "next/link";
 import styles from "./ProductDetail.module.css";
 import { TruckIcon, PinIcon, EyeIcon } from "./Icons";
 import { addToCart } from "../lib/cart";
+import ProductReviews from "./ProductReviews";
 
 export default function ProductDetail({ product }) {
   const tiers =
@@ -128,6 +129,8 @@ export default function ProductDetail({ product }) {
           Voir mon panier →
         </Link>
       </div>
+
+      <ProductReviews productId={product.id} />
     </main>
   );
 }

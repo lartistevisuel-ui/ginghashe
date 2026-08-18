@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { setOrderStatus } from "../../../lib/products-db";
+import {
+  setOrderStatus,
+  setReviewApproved,
+  deleteReviewFromDB,
+} from "../../../lib/products-db";
 
 export const dynamic = "force-dynamic";
 
@@ -30,10 +34,40 @@ export async function POST(req) {
   const cb = update.callback_query;
   if (cb) {
     const data = cb.data || "";
-    const [action, orderId] = data.split(":");
     const original = cb.message?.text || "";
     const chat_id = cb.message?.chat?.id;
     const message_id = cb.message?.message_id;
+
+    // Validation des avis : review:approve:<id> / review:reject:<id>
+    if (data.startsWith("review:")) {
+      const [, sub, reviewId] = data.split(":");
+      let line = "";
+      let toast = "";
+      if (sub === "approve") {
+        if (reviewId) {
+          try {
+            await setReviewApproved(reviewId, true);
+          } catch {}
+        }
+        line = "\n\n✅ AVIS PUBLIÉ";
+        toast = "Avis publié ✅";
+      } else if (sub === "reject") {
+        if (reviewId) {
+          try {
+            await deleteReviewFromDB(reviewId);
+          } catch {}
+        }
+        line = "\n\n🗑 AVIS REJETÉ";
+        toast = "Avis rejeté 🗑";
+      }
+      if (line) {
+        await tg("editMessageText", { chat_id, message_id, text: original + line });
+      }
+      await tg("answerCallbackQuery", { callback_query_id: cb.id, text: toast });
+      return NextResponse.json({ ok: true });
+    }
+
+    const [action, orderId] = data.split(":");
 
     const config = {
       accept: {
