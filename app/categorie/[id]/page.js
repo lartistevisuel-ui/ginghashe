@@ -2,19 +2,25 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Page from "../../../components/Page";
 import ProductCard from "../../../components/ProductCard";
-import { categories } from "../../../data/categories";
-import { getProductsFromDB } from "../../../lib/products-db";
+import { categories as staticCategories } from "../../../data/categories";
+import { getProductsFromDB, getCategoriesFromDB } from "../../../lib/products-db";
 import ui from "../../../components/UI.module.css";
 
 export const dynamic = "force-dynamic";
 
+async function findCat(id) {
+  const db = await getCategoriesFromDB();
+  const cats = db && db.length ? db : staticCategories;
+  return cats.find((c) => c.id === id) || null;
+}
+
 export async function generateMetadata({ params }) {
-  const cat = categories.find((c) => c.id === params.id);
+  const cat = await findCat(params.id);
   return { title: cat ? `${cat.label} — KINGHASH 94` : "Catégorie" };
 }
 
 export default async function CategoryPage({ params }) {
-  const cat = categories.find((c) => c.id === params.id);
+  const cat = await findCat(params.id);
   if (!cat) notFound();
 
   const db = await getProductsFromDB();

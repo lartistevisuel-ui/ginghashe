@@ -58,6 +58,13 @@ const icons = {
       <path d="M7.5 17h9" />
     </>
   ),
+  // Étiquette (par défaut)
+  default: (
+    <>
+      <path d="M3 7a2 2 0 0 1 2-2h6l9 9-6 6-9-9V7Z" />
+      <circle cx="8" cy="10" r="1.4" />
+    </>
+  ),
 };
 
 export default function CategoryIcon({ id, className }) {
@@ -74,7 +81,7 @@ export default function CategoryIcon({ id, className }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      {icons[id] || null}
+      {icons[id] || icons.default}
     </svg>
   );
 }

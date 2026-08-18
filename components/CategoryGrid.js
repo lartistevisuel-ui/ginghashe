@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styles from "./CategoryGrid.module.css";
-import { categories } from "../data/categories";
+import { categories as staticCategories } from "../data/categories";
+import { getCategoriesFromDB } from "../lib/products-db";
 import CategoryIcon from "./CategoryIcon";
 
 function GridIcon({ color }) {
@@ -14,7 +15,12 @@ function GridIcon({ color }) {
   );
 }
 
-export default function CategoryGrid() {
+export default async function CategoryGrid() {
+  const db = await getCategoriesFromDB();
+  const categories = db && db.length ? db : staticCategories;
+
+  if (!categories.length) return null;
+
   return (
     <section className={styles.section}>
       <div className={styles.header}>
@@ -32,7 +38,7 @@ export default function CategoryGrid() {
             style={{ "--cat-color": cat.color }}
           >
             <span className={styles.iconChip}>
-              <CategoryIcon id={cat.id} className={styles.catIcon} />
+              <CategoryIcon id={cat.icon || cat.id} className={styles.catIcon} />
             </span>
             <span className={styles.label}>{cat.label}</span>
           </Link>

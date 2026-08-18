@@ -7,7 +7,18 @@ import { categories } from "../data/categories";
 const TABS = [
   { section: "best", label: "Best-sellers" },
   { section: "new", label: "Nouveautés" },
+  { section: "cats", label: "Catégories" },
   { section: "avis", label: "Tchat" },
+];
+
+const ICON_KEYS = [
+  "extraction",
+  "flowers",
+  "edibbles",
+  "prerolls",
+  "goodies",
+  "genetics",
+  "default",
 ];
 
 const emptyForm = () => ({
@@ -43,12 +54,72 @@ export default function AdminManager() {
   const [deletingReviewId, setDeletingReviewId] = useState(null);
   const [chatEnabled, setChatEnabled] = useState(true);
 
+  const [cats, setCats] = useState(categories);
+  const [newCat, setNewCat] = useState({ label: "", color: "#4f8bff", icon: "default" });
+  const [catStatus, setCatStatus] = useState(null);
+
+  const loadCats = useCallback(async () => {
+    try {
+      const res = await fetch("/api/categories", { cache: "no-store" });
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) setCats(data);
+    } catch {
+      /* garde le fallback */
+    }
+  }, []);
+
   useEffect(() => {
     fetch("/api/settings", { cache: "no-store" })
       .then((r) => r.json())
       .then((s) => setChatEnabled(!(s && s.chat_enabled === "false")))
       .catch(() => {});
-  }, []);
+    loadCats();
+  }, [loadCats]);
+
+  async function addCategory(e) {
+    e.preventDefault();
+    if (!newCat.label.trim()) return;
+    setCatStatus(null);
+    try {
+      const res = await fetch("/api/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCat),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || "Erreur");
+      setNewCat({ label: "", color: "#4f8bff", icon: "default" });
+      loadCats();
+    } catch (err) {
+      setCatStatus({ type: "err", msg: err.message });
+    }
+  }
+
+  async function saveCategory(cat) {
+    try {
+      await fetch(`/api/categories?id=${encodeURIComponent(cat.id)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ label: cat.label, color: cat.color, icon: cat.icon }),
+      });
+      setCatStatus({ type: "ok", msg: `« ${cat.label} » enregistrée ✓` });
+    } catch {
+      setCatStatus({ type: "err", msg: "Enregistrement échoué." });
+    }
+  }
+
+  async function removeCategory(cat) {
+    if (!confirm(`Supprimer la catégorie « ${cat.label} » ?`)) return;
+    try {
+      await fetch(`/api/categories?id=${encodeURIComponent(cat.id)}`, { method: "DELETE" });
+      setCats((list) => list.filter((c) => c.id !== cat.id));
+    } catch {
+      setCatStatus({ type: "err", msg: "Suppression échouée." });
+    }
+  }
+
+  const editCat = (id, key, val) =>
+    setCats((list) => list.map((c) => (c.id === id ? { ...c, [key]: val } : c)));
 
   async function toggleChat() {
     const next = !chatEnabled;
@@ -246,7 +317,7 @@ export default function AdminManager() {
         </nav>
 
         <div className={styles.content}>
-          {section !== "avis" && (
+          {(section === "best" || section === "new") && (
           <>
           <form className={styles.form} onSubmit={submit}>
             <h2 className={styles.sectionTitle}>Ajouter dans « {current.label} »</h2>
@@ -288,7 +359,7 @@ export default function AdminManager() {
               <span className={styles.lbl}>Catégorie</span>
               <select className={styles.input} value={form.category} onChange={set("category")}>
                 <option value="">— Aucune —</option>
-                {categories.map((c) => (
+                {cats.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.label}
                   </option>
@@ -365,7 +436,7 @@ export default function AdminManager() {
                         : item.price}
                       {item.category &&
                         ` — ${
-                          categories.find((c) => c.id === item.category)?.label ||
+                          cats.find((c) => c.id === item.category)?.label ||
                           item.category
                         }`}
                     </span>
@@ -392,6 +463,72 @@ export default function AdminManager() {
             )}
           </section>
           </>
+          )}
+
+          {section === "cats" && (
+            <section className={styles.list}>
+              <h2 className={styles.sectionTitle}>
+                Gérer les catégories{" "}
+                <span className={styles.count}>({cats.length})</span>
+              </h2>
+              {catStatus && (
+                <div className={catStatus.type === "ok" ? styles.ok : styles.err}>
+                  {catStatus.msg}
+                </div>
+              )}
+
+              {cats.map((c) => (
+                <div key={c.id} className={styles.catRow}>
+                  <input
+                    type="color"
+                    className={styles.colorInput}
+                    value={c.color || "#4f8bff"}
+                    onChange={(e) => editCat(c.id, "color", e.target.value)}
+                  />
+                  <input
+                    className={styles.input}
+                    value={c.label}
+                    onChange={(e) => editCat(c.id, "label", e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className={styles.stockBtn}
+                    onClick={() => saveCategory(c)}
+                  >
+                    Enregistrer
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.delBtn}
+                    onClick={() => removeCategory(c)}
+                    aria-label="Supprimer"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+
+              <form className={styles.catAdd} onSubmit={addCategory}>
+                <span className={styles.sectionTitle}>Ajouter une catégorie</span>
+                <div className={styles.catRow}>
+                  <input
+                    type="color"
+                    className={styles.colorInput}
+                    value={newCat.color}
+                    onChange={(e) => setNewCat((n) => ({ ...n, color: e.target.value }))}
+                  />
+                  <input
+                    className={styles.input}
+                    value={newCat.label}
+                    onChange={(e) => setNewCat((n) => ({ ...n, label: e.target.value }))}
+                    placeholder="Nom de la catégorie"
+                  />
+                </div>
+                <button type="submit" className={styles.submit}>
+                  Ajouter la catégorie
+                </button>
+              </form>
+            </section>
           )}
 
           {section === "avis" && (
