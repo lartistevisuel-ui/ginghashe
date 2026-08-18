@@ -52,7 +52,18 @@ export async function POST(req) {
   const res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: ADMIN, text }),
+    body: JSON.stringify({
+      chat_id: ADMIN,
+      text,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: "✅ Accepter", callback_data: "accept" },
+            { text: "❌ Refuser", callback_data: "refuse" },
+          ],
+        ],
+      },
+    }),
   });
 
   if (!res.ok) {
