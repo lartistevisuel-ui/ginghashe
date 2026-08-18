@@ -63,19 +63,28 @@ export async function POST(req) {
     return NextResponse.json({ ok: true });
   }
 
-  // /start : génère un code de vérification
+  // /start : génère un code + envoie l'image captcha
   if (text.startsWith("/start")) {
     const code = genCode();
     await upsertVerification(chatId, code);
     const name = msg.from?.first_name ? ` ${msg.from.first_name}` : "";
-    await tg("sendMessage", {
+    const caption =
+      `Bienvenue${name} chez KINGHASH 94 👑🔮🧙\n\n` +
+      `Veuillez entrer le code affiché sur l'image pour accéder à notre application.`;
+
+    const res = await tg("sendPhoto", {
       chat_id: chatId,
-      text:
-        `Bienvenue${name} chez KINGHASH 94 👑🔥\n\n` +
-        `Pour accéder à la boutique, entre le code ci-dessous 👇\n\n` +
-        `▶️   ${code}   ◀️\n\n` +
-        `(Recopie-le et envoie-le en message)`,
+      photo: `${APP_URL}/api/captcha?c=${code}`,
+      caption,
     });
+
+    // Repli en texte si l'envoi de l'image échoue
+    if (!res.ok) {
+      await tg("sendMessage", {
+        chat_id: chatId,
+        text: `${caption}\n\n▶️   ${code}   ◀️`,
+      });
+    }
     return NextResponse.json({ ok: true });
   }
 
