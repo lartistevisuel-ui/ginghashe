@@ -84,8 +84,9 @@ export default function BottomNav() {
     };
   }, []);
 
-  // Pas de barre de navigation sur les pages admin
-  if (pathname && pathname.startsWith("/admin")) return null;
+  // Pas de barre de navigation sur l'admin ni le tchat (plein écran)
+  if (pathname && (pathname.startsWith("/admin") || pathname.startsWith("/tchat")))
+    return null;
 
   return (
     <nav className={styles.nav} aria-label="Navigation principale">

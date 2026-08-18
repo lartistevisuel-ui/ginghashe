@@ -17,7 +17,8 @@ export default function ScrollTopButton() {
 
   const toTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
-  if (pathname && pathname.startsWith("/admin")) return null;
+  if (pathname && (pathname.startsWith("/admin") || pathname.startsWith("/tchat")))
+    return null;
 
   return (
     <button

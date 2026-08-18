@@ -1,17 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./ChatSection.module.css";
 
 const COLORS = [
-  "#4f8bff",
-  "#4fe0a0",
-  "#e879f9",
-  "#f2c14e",
-  "#ff8088",
-  "#c9a2ff",
-  "#5be0d0",
-  "#ff9d5c",
+  "#5eead4",
+  "#4ade80",
+  "#60a5fa",
+  "#f472b6",
+  "#fbbf24",
+  "#c084fc",
+  "#fb923c",
+  "#38bdf8",
 ];
 
 function colorFor(str) {
@@ -22,16 +23,29 @@ function colorFor(str) {
 
 function time(ts) {
   try {
-    return new Date(ts).toLocaleTimeString("fr-FR", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    return new Date(ts).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
   } catch {
     return "";
   }
 }
 
+function dayKey(ts) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+function dayLabel(ts) {
+  const d = new Date(ts);
+  const now = new Date();
+  const y = new Date();
+  y.setDate(now.getDate() - 1);
+  if (dayKey(ts) === dayKey(now)) return "Aujourd'hui";
+  if (dayKey(ts) === dayKey(y)) return "Hier";
+  return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "long" });
+}
+
 export default function ChatSection() {
+  const router = useRouter();
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [name, setName] = useState("");
@@ -51,8 +65,7 @@ export default function ChatSection() {
 
   useEffect(() => {
     const u =
-      typeof window !== "undefined" &&
-      window.Telegram?.WebApp?.initDataUnsafe?.user;
+      typeof window !== "undefined" && window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (u) {
       const n = u.first_name
         ? `${u.first_name}${u.last_name ? " " + u.last_name : ""}`
@@ -90,47 +103,66 @@ export default function ChatSection() {
     }
   }
 
-  const members = new Set(
-    messages.map((m) => m.uid || m.author).filter(Boolean)
-  ).size;
+  const members = new Set(messages.map((m) => m.uid || m.author).filter(Boolean)).size;
 
   return (
-    <div className={styles.wrap}>
-      <div className={styles.header}>
-        <span className={styles.members}>
-          👥 {members} membre{members > 1 ? "s" : ""} · communauté KINGHASH 94
-        </span>
-      </div>
+    <main className={styles.page}>
+      <header className={styles.header}>
+        <button className={styles.back} type="button" onClick={() => router.push("/")} aria-label="Retour">
+          ←
+        </button>
+        <div className={styles.headInfo}>
+          <span className={styles.headTitle}>Tchat Groupe</span>
+          <span className={styles.headSub}>
+            👥 {members} membre{members > 1 ? "s" : ""} · <span className={styles.online}>● en direct</span>
+          </span>
+        </div>
+        <img src="/logo.png" alt="" className={styles.headAvatar} />
+      </header>
 
       <div className={styles.list} ref={listRef}>
         {messages.length === 0 ? (
-          <p className={styles.empty}>Aucun message. Sois le premier à écrire ! 💬</p>
+          <p className={styles.empty}>Aucun message. Lance la discussion ! 💬</p>
         ) : (
-          messages.map((m) => {
+          messages.map((m, i) => {
+            const prev = messages[i - 1];
+            const next = messages[i + 1];
             const mine = uid && m.uid && m.uid === uid;
+            const newDay = !prev || dayKey(prev.created_at) !== dayKey(m.created_at);
+            const firstOfGroup =
+              newDay || !prev || prev.author !== m.author || (uid && prev.uid !== m.uid);
+            const lastOfGroup =
+              !next ||
+              next.author !== m.author ||
+              dayKey(next.created_at) !== dayKey(m.created_at);
             const color = colorFor(m.author);
+
             return (
-              <div
-                key={m.id}
-                className={`${styles.row} ${mine ? styles.mineRow : ""}`}
-              >
-                {!mine && (
-                  <span
-                    className={styles.avatar}
-                    style={{ background: color }}
-                    aria-hidden="true"
-                  >
-                    {(m.author || "?").charAt(0).toUpperCase()}
-                  </span>
+              <div key={m.id}>
+                {newDay && (
+                  <div className={styles.daySep}>
+                    <span>{dayLabel(m.created_at)}</span>
+                  </div>
                 )}
-                <div className={`${styles.bubble} ${mine ? styles.mine : ""}`}>
+                <div className={`${styles.row} ${mine ? styles.mineRow : ""}`}>
                   {!mine && (
-                    <span className={styles.author} style={{ color }}>
-                      {m.author}
+                    <span className={styles.avatarSlot}>
+                      {lastOfGroup && (
+                        <span className={styles.avatar} style={{ background: color }}>
+                          {(m.author || "?").charAt(0).toUpperCase()}
+                        </span>
+                      )}
                     </span>
                   )}
-                  <span className={styles.msg}>{m.message}</span>
-                  <span className={styles.time}>{time(m.created_at)}</span>
+                  <div className={`${styles.bubble} ${mine ? styles.mine : ""}`}>
+                    {!mine && firstOfGroup && (
+                      <span className={styles.author} style={{ color }}>
+                        {m.author}
+                      </span>
+                    )}
+                    <span className={styles.msg}>{m.message}</span>
+                    <span className={styles.time}>{time(m.created_at)}</span>
+                  </div>
                 </div>
               </div>
             );
@@ -152,18 +184,13 @@ export default function ChatSection() {
           className={styles.input}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Écris un message…"
+          placeholder="Message…"
           maxLength={500}
         />
-        <button
-          className={styles.sendBtn}
-          type="submit"
-          disabled={sending || !text.trim()}
-          aria-label="Envoyer"
-        >
+        <button className={styles.sendBtn} type="submit" disabled={sending || !text.trim()} aria-label="Envoyer">
           ➤
         </button>
       </form>
-    </div>
+    </main>
   );
 }
