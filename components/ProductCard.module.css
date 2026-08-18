@@ -31,6 +31,16 @@
   position: relative;
 }
 
+.imgLink {
+  display: block;
+}
+
+.nameLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
 .image {
   width: 100%;
   aspect-ratio: 1 / 1;

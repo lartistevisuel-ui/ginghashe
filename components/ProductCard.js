@@ -27,11 +27,13 @@ export default function ProductCard({ product, fluid }) {
   return (
     <article className={`${styles.card} ${fluid ? styles.fluid : ""}`}>
       <div className={styles.media}>
-        <img
-          src={product.image || "/product-placeholder.svg"}
-          alt={product.name}
-          className={styles.image}
-        />
+        <Link href={`/produit/${product.id}`} className={styles.imgLink}>
+          <img
+            src={product.image || "/product-placeholder.svg"}
+            alt={product.name}
+            className={styles.image}
+          />
+        </Link>
 
         <div className={styles.badges}>
           {product.postal && (
@@ -79,7 +81,9 @@ export default function ProductCard({ product, fluid }) {
       </div>
 
       <div className={styles.body}>
-        <h3 className={styles.name}>{product.name}</h3>
+        <Link href={`/produit/${product.id}`} className={styles.nameLink}>
+          <h3 className={styles.name}>{product.name}</h3>
+        </Link>
         {product.grade && <span className={styles.grade}>{product.grade}</span>}
         {product.description && (
           <p className={styles.description}>{product.description}</p>
