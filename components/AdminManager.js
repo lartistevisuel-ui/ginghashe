@@ -41,6 +41,28 @@ export default function AdminManager() {
   const [reviews, setReviews] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(false);
   const [deletingReviewId, setDeletingReviewId] = useState(null);
+  const [chatEnabled, setChatEnabled] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/settings", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((s) => setChatEnabled(!(s && s.chat_enabled === "false")))
+      .catch(() => {});
+  }, []);
+
+  async function toggleChat() {
+    const next = !chatEnabled;
+    setChatEnabled(next);
+    try {
+      await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "chat_enabled", value: next ? "true" : "false" }),
+      });
+    } catch {
+      setChatEnabled(!next);
+    }
+  }
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -374,6 +396,26 @@ export default function AdminManager() {
 
           {section === "avis" && (
             <section className={styles.list}>
+              <div className={styles.toggleRow}>
+                <div>
+                  <div className={styles.toggleLabel}>Tchat visible pour les clients</div>
+                  <div className={styles.toggleSub}>
+                    {chatEnabled
+                      ? "Activé — l'onglet Tchat s'affiche"
+                      : "Désactivé — l'onglet est masqué"}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className={`${styles.switch} ${chatEnabled ? styles.switchOn : ""}`}
+                  onClick={toggleChat}
+                  aria-pressed={chatEnabled}
+                  aria-label="Activer/désactiver le tchat"
+                >
+                  <span className={styles.knob} />
+                </button>
+              </div>
+
               <h2 className={styles.sectionTitle}>
                 Messages du tchat{" "}
                 {!loadingReviews && <span className={styles.count}>({reviews.length})</span>}

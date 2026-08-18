@@ -69,6 +69,7 @@ export default function BottomNav() {
   const pathname = usePathname();
   const [count, setCount] = useState(0);
   const [ordersDot, setOrdersDot] = useState(false);
+  const [chatEnabled, setChatEnabled] = useState(true);
 
   useEffect(() => {
     const sync = () => setCount(cartCount());
@@ -79,11 +80,21 @@ export default function BottomNav() {
     syncOrders();
     window.addEventListener("orders-changed", syncOrders);
 
+    // Réglage : tchat activé ou non
+    fetch("/api/settings", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((s) => {
+        if (s && s.chat_enabled === "false") setChatEnabled(false);
+      })
+      .catch(() => {});
+
     return () => {
       window.removeEventListener("cart-changed", sync);
       window.removeEventListener("orders-changed", syncOrders);
     };
   }, []);
+
+  const tabs = TABS.filter((t) => t.id !== "reviews" || chatEnabled);
 
   // Pas de barre de navigation sur l'admin ni le tchat (plein écran)
   if (pathname && (pathname.startsWith("/admin") || pathname.startsWith("/tchat")))
@@ -91,7 +102,7 @@ export default function BottomNav() {
 
   return (
     <nav className={styles.nav} aria-label="Navigation principale">
-      {TABS.map((tab) => {
+      {tabs.map((tab) => {
         const active =
           tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
         return (
