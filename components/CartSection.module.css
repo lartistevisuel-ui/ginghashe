@@ -1,24 +1,26 @@
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
+/* --- Article --- */
 .row {
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 10px;
-  border-radius: 14px;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
   border: 1px solid var(--divider);
-  background: var(--bg-elevated);
+  background: linear-gradient(165deg, var(--bg-elevated) 0%, var(--bg-elevated-2) 100%);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
 }
 
 .thumb {
   flex: 0 0 auto;
-  width: 56px;
-  height: 56px;
-  border-radius: 10px;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
   object-fit: cover;
   border: 1px solid var(--divider);
 }
@@ -26,7 +28,7 @@
 .info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
   flex: 1;
 }
@@ -42,12 +44,13 @@
 
 .weight {
   font-size: 11px;
+  font-weight: 700;
   color: var(--muted);
 }
 
 .price {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 800;
   color: var(--accent);
 }
 
@@ -56,35 +59,45 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 7px;
+  gap: 8px;
 }
 
+/* Stepper quantité */
 .qty {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 4px 8px;
+  gap: 2px;
+  padding: 3px;
   border-radius: 999px;
   border: 1px solid var(--divider);
-  background: var(--bg-elevated-2);
+  background: var(--bg);
 }
 
 .qty button {
-  background: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
   border: none;
+  background: var(--bg-elevated-2);
   color: var(--ivory);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
-  cursor: pointer;
   line-height: 1;
-  width: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty button:active {
+  background: var(--accent);
 }
 
 .qty span {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--ivory);
-  min-width: 14px;
+  min-width: 20px;
   text-align: center;
 }
 
@@ -98,40 +111,42 @@
   padding: 0;
 }
 
+/* --- Total --- */
 .totalRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 6px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid var(--divider);
-  background: var(--bg-elevated);
+  margin-top: 4px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(225, 29, 42, 0.3);
+  background: linear-gradient(165deg, rgba(225, 29, 42, 0.08), var(--bg-elevated));
   font-size: 14px;
   font-weight: 700;
   color: var(--ivory);
 }
 
 .total {
-  font-size: 20px;
-  font-weight: 800;
+  font-size: 22px;
+  font-weight: 900;
   color: var(--accent);
+  filter: drop-shadow(0 0 10px rgba(225, 29, 42, 0.35));
 }
 
-/* Formulaire de commande */
+/* --- Formulaire --- */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 11px;
-  margin-top: 6px;
-  padding: 14px;
-  border-radius: 14px;
+  gap: 12px;
+  margin-top: 4px;
+  padding: 16px;
+  border-radius: 16px;
   border: 1px solid var(--divider);
-  background: var(--bg-elevated);
+  background: linear-gradient(165deg, var(--bg-elevated) 0%, var(--bg-elevated-2) 100%);
 }
 
 .formTitle {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 800;
   color: var(--ivory);
 }
@@ -139,7 +154,7 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
 }
 
 .lbl {
@@ -150,8 +165,8 @@
 
 .input {
   width: 100%;
-  padding: 11px 12px;
-  border-radius: 10px;
+  padding: 12px 13px;
+  border-radius: 12px;
   border: 1px solid var(--divider);
   background: var(--bg-elevated-2);
   color: var(--ivory);
@@ -159,39 +174,48 @@
   font-size: 14px;
   outline: none;
   resize: vertical;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .input:focus {
   border-color: var(--accent-soft);
+  box-shadow: 0 0 0 3px rgba(79, 139, 255, 0.12);
 }
 
+/* Sélecteur mode : segmenté */
 .modeRow {
   display: flex;
   gap: 8px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--bg-elevated-2);
+  border: 1px solid var(--divider);
 }
 
 .modeBtn {
   flex: 1;
   padding: 11px;
   border-radius: 10px;
-  border: 1px solid var(--divider);
-  background: var(--bg-elevated-2);
+  border: none;
+  background: transparent;
   color: var(--muted);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .modeActive {
   color: #fff;
-  border-color: transparent;
   background: linear-gradient(180deg, #ef2b3d 0%, var(--accent) 100%);
+  box-shadow: 0 4px 12px rgba(225, 29, 42, 0.35);
 }
 
+/* --- Boutons --- */
 .checkout {
   margin-top: 4px;
   width: 100%;
-  padding: 15px;
+  padding: 16px;
   border-radius: 14px;
   border: none;
   background: linear-gradient(180deg, #ef2b3d 0%, var(--accent) 100%);
@@ -200,6 +224,13 @@
   font-weight: 800;
   letter-spacing: 0.04em;
   cursor: pointer;
+  box-shadow: 0 10px 26px rgba(225, 29, 42, 0.4);
+}
+
+.checkout:disabled {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
 }
 
 .clear {
@@ -224,18 +255,19 @@
   color: #ff8088;
 }
 
-.checkout:disabled {
-  opacity: 0.6;
-  cursor: default;
-}
-
+/* --- États vide / succès --- */
 .bigCart {
-  font-size: 44px;
+  font-size: 52px;
   margin-bottom: 4px;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.4));
 }
 
 .shopLink {
   margin-top: 10px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-soft);
+  background: rgba(79, 139, 255, 0.1);
   color: var(--accent-soft);
   font-size: 13px;
   font-weight: 700;
