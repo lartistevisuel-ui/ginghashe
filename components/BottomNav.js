@@ -54,9 +54,10 @@ function Icon({ id }) {
       );
     case "cart":
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M6 8h12l-1 11a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1L6 8Z" strokeLinejoin="round" />
-          <path d="M9 8a3 3 0 0 1 6 0" strokeLinecap="round" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="9" cy="20.5" r="1.3" />
+          <circle cx="18" cy="20.5" r="1.3" />
+          <path d="M2 3h2.2l2.3 12.3a1.6 1.6 0 0 0 1.6 1.3h9.4a1.6 1.6 0 0 0 1.6-1.3L21 7H5.3" />
         </svg>
       );
     default:

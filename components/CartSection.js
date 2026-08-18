@@ -16,8 +16,9 @@ import { TruckIcon, PinIcon } from "./Icons";
 
 const CartGlyph = ({ size = 24 }) => (
   <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M6 8h12l-1 11a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1L6 8Z" />
-    <path d="M9 8a3 3 0 0 1 6 0" />
+    <circle cx="9" cy="20.5" r="1.4" />
+    <circle cx="18" cy="20.5" r="1.4" />
+    <path d="M2 3h2.2l2.3 12.3a1.6 1.6 0 0 0 1.6 1.3h9.4a1.6 1.6 0 0 0 1.6-1.3L21 7H5.3" />
   </svg>
 );
 const CheckGlyph = ({ size = 48 }) => (
