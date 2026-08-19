@@ -51,6 +51,7 @@ export async function POST(req) {
     vitrine: Boolean(body.vitrine),
     soldout: Boolean(body.soldout),
     image: body.image ? String(body.image).trim() : "/product-placeholder.svg",
+    video: body.video ? String(body.video).trim() : "",
     section: body.section === "new" ? "new" : "best",
   };
 

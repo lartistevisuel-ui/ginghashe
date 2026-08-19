@@ -27,6 +27,7 @@ const emptyForm = () => ({
   description: "",
   variant: "",
   category: "",
+  video: "",
   postal: true,
   meetup: true,
   vitrine: false,
@@ -204,6 +205,36 @@ export default function AdminManager() {
     setPreview(f ? URL.createObjectURL(f) : null);
   };
 
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+  async function onVideoPick(e) {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!f) return;
+    setUploadingVideo(true);
+    setStatus(null);
+    try {
+      const sign = await (
+        await fetch("/api/upload-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: f.name }),
+        })
+      ).json();
+      if (!sign.uploadUrl) throw new Error(sign.error || "Signature échouée");
+      const put = await fetch(sign.uploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": f.type || "video/mp4", "x-upsert": "true" },
+        body: f,
+      });
+      if (!put.ok) throw new Error("Upload de la vidéo échoué");
+      setForm((fm) => ({ ...fm, video: sign.publicUrl }));
+    } catch (err) {
+      setStatus({ type: "err", msg: "Vidéo : " + err.message });
+    } finally {
+      setUploadingVideo(false);
+    }
+  }
+
   const resetForm = () => {
     setForm(emptyForm());
     setTiers([{ weight: "", price: "" }]);
@@ -333,6 +364,35 @@ export default function AdminManager() {
                 )}
                 <input type="file" accept="image/*" onChange={onFile} hidden />
               </label>
+            </div>
+
+            <div className={styles.field}>
+              <span className={styles.lbl}>Vidéo (optionnel)</span>
+              {form.video ? (
+                <div className={styles.videoDone}>
+                  <video src={form.video} className={styles.videoThumb} muted playsInline />
+                  <button
+                    type="button"
+                    className={styles.delBtn}
+                    onClick={() => setForm((f) => ({ ...f, video: "" }))}
+                  >
+                    Retirer la vidéo
+                  </button>
+                </div>
+              ) : (
+                <label className={styles.upload}>
+                  <span className={styles.uploadHint}>
+                    {uploadingVideo ? "⏳ Envoi de la vidéo…" : "🎬 Ajouter une vidéo"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    onChange={onVideoPick}
+                    hidden
+                    disabled={uploadingVideo}
+                  />
+                </label>
+              )}
             </div>
 
             <label className={styles.field}>

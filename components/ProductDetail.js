@@ -6,6 +6,7 @@ import styles from "./ProductDetail.module.css";
 import { TruckIcon, PinIcon, EyeIcon } from "./Icons";
 import { addToCart } from "../lib/cart";
 import ProductReviews from "./ProductReviews";
+import ProductVideo from "./ProductVideo";
 
 export default function ProductDetail({ product }) {
   const tiers =
@@ -129,6 +130,12 @@ export default function ProductDetail({ product }) {
           Voir mon panier →
         </Link>
       </div>
+
+      {product.video && (
+        <div className={styles.videoSection}>
+          <ProductVideo src={product.video} name={product.name} />
+        </div>
+      )}
 
       <ProductReviews productId={product.id} />
     </main>

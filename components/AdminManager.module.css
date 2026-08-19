@@ -135,6 +135,21 @@
   display: block;
 }
 
+.videoDone {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.videoThumb {
+  width: 90px;
+  height: 64px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #000;
+  border: 1px solid var(--divider);
+}
+
 /* Lignes de tarifs multiples */
 .tierRow {
   display: grid;
