@@ -32,6 +32,10 @@ function shopButton() {
   return {
     inline_keyboard: [
       [{ text: "🛒 Ouvrir la boutique", web_app: { url: APP_URL } }],
+      [
+        { text: "🥔 Potato", url: "https://tato.im/kinghash755" },
+        { text: "💬 WhatsApp", url: "https://wa.me/message/IJGBI5HMO3F2L1" },
+      ],
     ],
   };
 }
@@ -102,11 +106,20 @@ export async function POST(req) {
         settings.start_welcome && settings.start_welcome.trim()
           ? settings.start_welcome
           : `✅ Vérification réussie !\n\nBienvenue chez KINGHASH 94 👑🔥\nAppuie sur le bouton pour ouvrir la boutique.`;
-      await tg("sendMessage", {
+      const res = await tg("sendPhoto", {
         chat_id: chatId,
-        text: welcome,
+        photo: `${APP_URL}/hero.jpg`,
+        caption: welcome,
         reply_markup: shopButton(),
       });
+      // Repli en texte si l'envoi de l'image échoue
+      if (!res.ok) {
+        await tg("sendMessage", {
+          chat_id: chatId,
+          text: welcome,
+          reply_markup: shopButton(),
+        });
+      }
     } else {
       await tg("sendMessage", {
         chat_id: chatId,
