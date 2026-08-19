@@ -26,15 +26,19 @@
 
 .marquee {
   flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
   display: flex;
   align-items: center;
 }
 
-.track {
+.group {
+  flex: 0 0 auto;
+  min-width: 100%;
   display: flex;
-  width: max-content;
-  animation: scrollLeft 20s linear infinite;
+  align-items: center;
+  animation: scrollLeft 24s linear infinite;
+  will-change: transform;
 }
 
 .item {
@@ -52,6 +56,6 @@
     transform: translateX(0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translateX(-100%);
   }
 }

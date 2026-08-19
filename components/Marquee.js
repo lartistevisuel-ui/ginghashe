@@ -6,6 +6,16 @@ import { MegaphoneIcon } from "./Icons";
 
 const DEFAULT = "KINGHASH 94 — Livraison rapide — Nouveautés chaque semaine";
 
+function Group({ message, hidden }) {
+  return (
+    <div className={styles.group} aria-hidden={hidden || undefined}>
+      <span className={styles.item}>{message}</span>
+      <span className={styles.item}>{message}</span>
+      <span className={styles.item}>{message}</span>
+    </div>
+  );
+}
+
 export default function Marquee() {
   const [message, setMessage] = useState(DEFAULT);
 
@@ -25,12 +35,8 @@ export default function Marquee() {
         <MegaphoneIcon className={styles.labelIcon} size={15} /> INFOS
       </div>
       <div className={styles.marquee}>
-        <div className={styles.track}>
-          <span className={styles.item}>{message}</span>
-          <span className={styles.item}>{message}</span>
-          <span className={styles.item}>{message}</span>
-          <span className={styles.item}>{message}</span>
-        </div>
+        <Group message={message} />
+        <Group message={message} hidden />
       </div>
     </div>
   );
