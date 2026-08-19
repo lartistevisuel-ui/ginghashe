@@ -343,6 +343,18 @@
   background: var(--bg-elevated);
 }
 
+/* Panneau textes (bandeau + /start) */
+.textPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--divider);
+  background: var(--bg-elevated);
+  margin-bottom: 14px;
+}
+
 /* Interrupteur (réglage) */
 .toggleRow {
   display: flex;

@@ -3,6 +3,7 @@ import {
   getVerification,
   upsertVerification,
   setVerified,
+  getSettings,
 } from "../../../lib/products-db";
 
 export const dynamic = "force-dynamic";
@@ -67,10 +68,13 @@ export async function POST(req) {
   if (text.startsWith("/start")) {
     const code = genCode();
     await upsertVerification(chatId, code);
+    const settings = await getSettings();
     const name = msg.from?.first_name ? ` ${msg.from.first_name}` : "";
     const caption =
-      `Bienvenue${name} chez KINGHASH 94 👑🔮🧙\n\n` +
-      `Veuillez entrer le code affiché sur l'image pour accéder à notre application.`;
+      (settings.start_caption && settings.start_caption.trim()
+        ? settings.start_caption
+        : `Bienvenue${name} chez KINGHASH 94 👑🔮🧙`) +
+      `\n\nVeuillez entrer le code affiché sur l'image pour accéder à notre application.`;
 
     const res = await tg("sendPhoto", {
       chat_id: chatId,
@@ -93,9 +97,14 @@ export async function POST(req) {
     const v = await getVerification(chatId);
     if (v && v.code && text.toUpperCase() === String(v.code).toUpperCase()) {
       await setVerified(chatId);
+      const settings = await getSettings();
+      const welcome =
+        settings.start_welcome && settings.start_welcome.trim()
+          ? settings.start_welcome
+          : `✅ Vérification réussie !\n\nBienvenue chez KINGHASH 94 👑🔥\nAppuie sur le bouton pour ouvrir la boutique.`;
       await tg("sendMessage", {
         chat_id: chatId,
-        text: `✅ Vérification réussie !\n\nBienvenue chez KINGHASH 94 👑🔥\nAppuie sur le bouton pour ouvrir la boutique.`,
+        text: welcome,
         reply_markup: shopButton(),
       });
     } else {

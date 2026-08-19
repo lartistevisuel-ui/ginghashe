@@ -8,6 +8,7 @@ const TABS = [
   { section: "best", label: "Best-sellers" },
   { section: "new", label: "Nouveautés" },
   { section: "cats", label: "Catégories" },
+  { section: "reviews", label: "Avis" },
   { section: "avis", label: "Tchat" },
 ];
 
@@ -54,6 +55,83 @@ export default function AdminManager() {
   const [loadingReviews, setLoadingReviews] = useState(false);
   const [deletingReviewId, setDeletingReviewId] = useState(null);
   const [chatEnabled, setChatEnabled] = useState(true);
+
+  // Modération des avis produits
+  const [prodReviews, setProdReviews] = useState([]);
+  const [loadingProdReviews, setLoadingProdReviews] = useState(false);
+  const [deletingProdRev, setDeletingProdRev] = useState(null);
+
+  // Réglages textes (bandeau + messages /start)
+  const [texts, setTexts] = useState({
+    marquee_text: "",
+    start_caption: "",
+    start_welcome: "",
+  });
+  const [savingText, setSavingText] = useState("");
+  const [textStatus, setTextStatus] = useState(null);
+
+  const loadProdReviews = useCallback(async () => {
+    setLoadingProdReviews(true);
+    try {
+      const res = await fetch("/api/reviews?all=1", { cache: "no-store" });
+      const data = await res.json();
+      setProdReviews(Array.isArray(data) ? data : []);
+    } catch {
+      setProdReviews([]);
+    } finally {
+      setLoadingProdReviews(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (section === "reviews") loadProdReviews();
+  }, [section, loadProdReviews]);
+
+  useEffect(() => {
+    fetch("/api/settings", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((s) =>
+        setTexts((t) => ({
+          marquee_text: s.marquee_text ?? t.marquee_text,
+          start_caption: s.start_caption ?? t.start_caption,
+          start_welcome: s.start_welcome ?? t.start_welcome,
+        }))
+      )
+      .catch(() => {});
+  }, []);
+
+  async function saveText(key) {
+    setSavingText(key);
+    setTextStatus(null);
+    try {
+      await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key, value: texts[key] }),
+      });
+      setTextStatus({ type: "ok", msg: "Enregistré ✓" });
+    } catch {
+      setTextStatus({ type: "err", msg: "Échec de l'enregistrement." });
+    } finally {
+      setSavingText("");
+    }
+  }
+
+  async function removeProdReview(r) {
+    if (!confirm(`Supprimer l'avis de « ${r.author} » ?`)) return;
+    setDeletingProdRev(r.id);
+    try {
+      const res = await fetch(`/api/reviews?id=${encodeURIComponent(r.id)}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error();
+      setProdReviews((list) => list.filter((x) => x.id !== r.id));
+    } catch {
+      setCatStatus({ type: "err", msg: "Suppression de l'avis échouée." });
+    } finally {
+      setDeletingProdRev(null);
+    }
+  }
 
   const [cats, setCats] = useState(categories);
   const [newCat, setNewCat] = useState({ label: "", color: "#4f8bff", icon: "default" });
@@ -525,6 +603,47 @@ export default function AdminManager() {
           </>
           )}
 
+          {section === "reviews" && (
+            <section className={styles.list}>
+              <h2 className={styles.sectionTitle}>
+                Avis clients{" "}
+                {!loadingProdReviews && (
+                  <span className={styles.count}>({prodReviews.length})</span>
+                )}
+              </h2>
+              {loadingProdReviews ? (
+                <p className={styles.muted}>Chargement…</p>
+              ) : prodReviews.length === 0 ? (
+                <p className={styles.muted}>Aucun avis pour l'instant.</p>
+              ) : (
+                prodReviews.map((r) => (
+                  <div key={r.id} className={styles.itemRow}>
+                    <div className={styles.itemInfo}>
+                      <span className={styles.itemName}>
+                        {r.author}{" "}
+                        <span className={styles.reviewStars}>
+                          {"★".repeat(Math.max(0, Math.min(5, Number(r.stars) || 0)))}
+                        </span>
+                        {!r.approved && <span className={styles.ruptureTag}>À VALIDER</span>}
+                      </span>
+                      <span className={styles.itemMeta}>{r.message}</span>
+                    </div>
+                    <div className={styles.itemActions}>
+                      <button
+                        className={styles.delBtn}
+                        type="button"
+                        onClick={() => removeProdReview(r)}
+                        disabled={deletingProdRev === r.id}
+                      >
+                        {deletingProdRev === r.id ? "…" : "Supprimer"}
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </section>
+          )}
+
           {section === "cats" && (
             <section className={styles.list}>
               <h2 className={styles.sectionTitle}>
@@ -593,6 +712,53 @@ export default function AdminManager() {
 
           {section === "avis" && (
             <section className={styles.list}>
+              <div className={styles.textPanel}>
+                <span className={styles.sectionTitle}>Textes &amp; bandeau</span>
+                {textStatus && (
+                  <div className={textStatus.type === "ok" ? styles.ok : styles.err}>
+                    {textStatus.msg}
+                  </div>
+                )}
+                <div className={styles.field}>
+                  <span className={styles.lbl}>Bandeau info (défilant sur l'accueil)</span>
+                  <input
+                    className={styles.input}
+                    value={texts.marquee_text}
+                    onChange={(e) => setTexts((t) => ({ ...t, marquee_text: e.target.value }))}
+                    placeholder="KINGHASH 94 — Livraison rapide — Nouveautés…"
+                  />
+                  <button type="button" className={styles.stockBtn} onClick={() => saveText("marquee_text")} disabled={savingText === "marquee_text"}>
+                    Enregistrer
+                  </button>
+                </div>
+                <div className={styles.field}>
+                  <span className={styles.lbl}>Message /start (avant le code)</span>
+                  <textarea
+                    className={styles.input}
+                    rows={2}
+                    value={texts.start_caption}
+                    onChange={(e) => setTexts((t) => ({ ...t, start_caption: e.target.value }))}
+                    placeholder="Bienvenue chez KINGHASH 94 👑🔮🧙"
+                  />
+                  <button type="button" className={styles.stockBtn} onClick={() => saveText("start_caption")} disabled={savingText === "start_caption"}>
+                    Enregistrer
+                  </button>
+                </div>
+                <div className={styles.field}>
+                  <span className={styles.lbl}>Message /start (après vérification)</span>
+                  <textarea
+                    className={styles.input}
+                    rows={2}
+                    value={texts.start_welcome}
+                    onChange={(e) => setTexts((t) => ({ ...t, start_welcome: e.target.value }))}
+                    placeholder="✅ Bienvenue ! Appuie pour ouvrir la boutique 👇"
+                  />
+                  <button type="button" className={styles.stockBtn} onClick={() => saveText("start_welcome")} disabled={savingText === "start_welcome"}>
+                    Enregistrer
+                  </button>
+                </div>
+              </div>
+
               <div className={styles.toggleRow}>
                 <div>
                   <div className={styles.toggleLabel}>Tchat visible pour les clients</div>

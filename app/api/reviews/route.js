@@ -14,8 +14,9 @@ const ADMIN = process.env.TELEGRAM_ADMIN_CHAT_ID;
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const productId = searchParams.get("product_id");
-  // Public : uniquement les avis approuvés
-  const data = await getReviewsFromDB(productId || undefined, true);
+  const all = searchParams.get("all") === "1";
+  // Public : uniquement les avis approuvés. Admin (all=1) : tous les avis.
+  const data = await getReviewsFromDB(productId || undefined, !all);
   return NextResponse.json(data || []);
 }
 
