@@ -6,7 +6,25 @@
 }
 
 .header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
   padding: 26px 16px 10px;
+}
+
+.logout {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  padding: 8px 13px;
+  border-radius: 9px;
+  border: 1px solid var(--divider);
+  background: var(--bg-elevated);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 .title {

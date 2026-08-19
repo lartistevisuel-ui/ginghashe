@@ -404,8 +404,20 @@ export default function AdminManager() {
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Admin — Produits</h1>
-        <p className={styles.subtitle}>Ajouter et gérer tous les produits</p>
+        <div>
+          <h1 className={styles.title}>Admin — Produits</h1>
+          <p className={styles.subtitle}>Ajouter et gérer tous les produits</p>
+        </div>
+        <button
+          type="button"
+          className={styles.logout}
+          onClick={async () => {
+            await fetch("/api/admin-logout", { method: "POST" }).catch(() => {});
+            window.location.href = "/admin/login";
+          }}
+        >
+          Déconnexion
+        </button>
       </header>
 
       <div className={styles.layout}>
